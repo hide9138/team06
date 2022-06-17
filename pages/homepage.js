@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import styles from '../styles/Homepage.module.css';
 import { useAuth } from "../components/AuthContext";
 
@@ -110,6 +111,12 @@ const MenuList = ({ href, icon, text }) => {
 
 
 const LeftSideBar = () => {
+  const { currentUser, logout } = useAuth()
+  const router = useRouter();
+  const handleLogoutButton = () => {
+    logout();
+    router.push('/login')
+  }
   return (
     <div className={styles.leftSideBar}>
       <nav className={styles.navMenu}>
@@ -122,6 +129,10 @@ const LeftSideBar = () => {
         <button className={styles.outputButton} onClick={() => console.log('output here!')}>
           アウトプットする
         </button>
+      </div>
+      <div className={styles.space} />
+      <div className={styles.btnContainer}>
+        <button onClick={handleLogoutButton}>ログアウト</button>
       </div>
     </div>
   )
