@@ -7,7 +7,7 @@ export default function Login() {
 
     const handleLoginButton = () => {
         login();
-        router.push('/home')
+        router.push('/homepage')
       }
 
     const handleLogoutButton = () => {
@@ -21,7 +21,7 @@ export default function Login() {
                 <div>
                     <h2>ログインしています.</h2>
                     <h2>{currentUser.displayName}</h2>
-                    <button onClick={() => router.push('/home')}>
+                    <button onClick={() => router.push('/homepage')}>
                     Homeへ
                     </button>
                     <button onClick={handleLogoutButton}>ログアウト</button>

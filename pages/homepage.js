@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import styles from '../styles/Homepage.module.css';
+import { useAuth } from "../components/AuthContext";
 
 const user = {
   photoUrl: 'https://static.overlay-tech.com/assets/3d3c257d-25ef-46ac-8f50-17b6d4792414.png',
@@ -82,16 +83,17 @@ const links = [
   { href: '/home', icon: 'https://static.overlay-tech.com/assets/6b492c36-3113-40a2-91ba-2ae01680d4ab.svg', text: 'ホーム' },
   { href: '/message', icon: 'https://static.overlay-tech.com/assets/d704290d-0dc2-4c92-88c9-f094852e5678.svg', text: 'メッセージ' },
   { href: '/bookmark', icon: 'https://static.overlay-tech.com/assets/6b492c36-3113-40a2-91ba-2ae01680d4ab.svg', text: 'ブックマーク' },
-  { href: '/profile', icon: user.photoUrl, text: 'プロフィール' },
+  { href: '/profile', text: 'プロフィール' },
 ]
 
 const MenuList = ({ href, icon, text }) => {
+  const { currentUser } = useAuth()
   return (
     <div className={styles.menuItem}>
       <Link href={href}>
         <a className={styles.navLink}>
           {text === 'プロフィール' ? (
-            <img className={styles.userImage} src={icon} width="40" height="40" alt="icon" />
+            <img className={styles.userImage} src={currentUser.photoURL} width="40" height="40" alt="icon" />
           ) : (
             <img className={styles.navIcon} src={icon} width="30" height="30" alt="icon" />
           )}
@@ -207,13 +209,18 @@ const RightSideBar = () => {
 }
 
 const HomePage = () => {
+  const { currentUser } = useAuth()
   return (
-    <div className={styles.container}>
-      <LeftSideBar />
-      <Main />
-      <RightSideBar />
+    <div>
+    {currentUser &&
+      <div className={styles.container}>
+        <LeftSideBar />
+        <Main />
+        <RightSideBar />
+      </div>
+    }
     </div>
   )
-}
+  }
 
 export default HomePage
