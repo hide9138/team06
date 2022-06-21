@@ -1,8 +1,8 @@
 import React from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import styles from '../styles/Homepage.module.css'
-import { useAuth } from '../components/AuthContext'
+import styles from '../../styles/Homepage.module.css'
+import { useAuth } from '../../components/AuthContext'
 
 const user = {
 	photoUrl: 'https://static.overlay-tech.com/assets/3d3c257d-25ef-46ac-8f50-17b6d4792414.png',
@@ -97,7 +97,7 @@ const LeftSideBar = () => {
 	const router = useRouter()
 	const handleLogoutButton = () => {
 		logout()
-		router.push('/login')
+		router.push('../')
 	}
 	return (
 		<div className={styles.leftSideBar}>
