@@ -12,6 +12,6 @@ yarn -v
 
 ## set up 方法
 
-1. git clone https://github.com/hide9138/team06.git
-2. yarn install
-3. yarn dev
+1. `git clone https://github.com/hide9138/team06.git`
+2. `yarn install`
+3. `yarn dev`
