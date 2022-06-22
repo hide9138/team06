@@ -19,7 +19,7 @@ const AuthProvider = ({ children }) => {
 				const user = result.user
 				const userRef = db.collection('users').doc(user.uid)
 				userRef.set({
-					name: user.displayName,
+					displayName: user.displayName,
 					photoURL: user.photoURL,
 					email: user.email,
 					likeBookCount: 0,
