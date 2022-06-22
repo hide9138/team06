@@ -1,0 +1,293 @@
+.container {
+	position: relative;
+	min-width: 100vh;
+	min-height: 100vh;
+	max-height: 100vh;
+	background: #59bc6c;
+	display: flex;
+	justify-content: center;
+	overflow: auto;
+}
+
+/* common */
+.userImage {
+	border-radius: 50%;
+	margin-left: 0.3rem;
+	margin-right: 0.7rem;
+}
+
+/* left content area */
+
+.leftSideBar {
+	width: 364px;
+	padding: 1.5rem 1rem;
+	display: flex;
+	flex-direction: column;
+	position: sticky;
+	top: 0;
+	border-right: 1px solid #ebeef0;
+}
+
+.menuItem {
+	padding: 0.3rem;
+	padding-left: 0.5rem;
+	border-radius: 30px;
+}
+
+.menuItem:hover {
+	background: #4b9a5a;
+}
+
+.navMenu {
+	margin-top: 50px;
+	color: white;
+}
+
+.navLink {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	font-size: 24px;
+	padding: 0.5rem;
+}
+
+.navIcon {
+	margin-left: 0.4rem;
+	margin-right: 18px;
+}
+
+.now {
+	font-weight: bold;
+	margin-left: 1rem;
+}
+
+.menuText {
+	margin-left: 1rem;
+}
+
+.space {
+	height: 230px;
+}
+
+.btnContainer {
+	display: flex;
+	justify-content: center;
+}
+
+.outputButton {
+	width: 240px;
+	height: 50px;
+	border: 1px solid #ddd;
+	border-radius: 20px;
+	box-shadow: 0px 8px 8px 0px #000;
+	font-weight: 900;
+	font-size: 15px;
+	cursor: pointer;
+	align-items: center;
+}
+
+/* Main content area */
+
+.main {
+	width: 599px;
+}
+
+.userProfile {
+	position: relative;
+}
+
+.userInfoContainer {
+	display: flex;
+	flex-direction: column;
+	padding: 2rem;
+}
+
+.userInfoData {
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: 2rem 2rem;
+}
+
+.userBlock {
+	display: flex;
+	flex-direction: column;
+	margin-left: 1rem;
+}
+
+.userInfoBlock {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	color: #fff;
+	height: fit-content;
+}
+
+.userInfoText {
+	font-size: 20px;
+	color: #fff;
+	margin-bottom: 0.2rem;
+}
+
+.userDisplayName {
+	font-family: 'Inter';
+	font-size: 22px;
+	font-weight: 600;
+	margin: 0;
+	margin-bottom: 10px;
+}
+
+.username {
+	font-family: 'Inter';
+	font-size: 20px;
+	font-weight: 200;
+	line-height: normal;
+	margin: 0;
+}
+
+.editButton {
+	position: absolute;
+	top: 65px;
+	right: 22px;
+	height: 42px;
+	width: 172px;
+	border-radius: 20px;
+}
+
+.userRelations {
+	display: flex;
+	flex-direction: row;
+	gap: 2rem;
+	color: white;
+}
+
+.cnt {
+	font-weight: 800;
+}
+
+.tabs {
+	width: 100%;
+	display: flex;
+	justify-content: space-around;
+	padding-bottom: 1rem;
+	border-bottom: 1px solid #ddd;
+	margin-bottom: 1rem;
+}
+
+.tab {
+	color: #ddd;
+}
+
+.tabActive {
+	color: white;
+}
+
+.outputsContainer {
+	padding: 1rem 2rem;
+}
+
+.outputCard {
+	width: 100%;
+	height: 226px;
+	background: white;
+	border-radius: 10px;
+	padding: 1rem;
+	padding-left: 2rem;
+	margin-bottom: 2rem;
+	box-shadow: 0px 4px 4px 1px #000;
+	position: relative;
+	overflow: hidden;
+}
+
+.userInfo {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+.userName {
+	font-size: 10px;
+}
+
+.threeWords {
+	font-size: 15px;
+}
+
+.bookInfo {
+	display: flex;
+	flex-direction: row;
+}
+
+.actions {
+	position: absolute;
+	bottom: 10px;
+	left: 130px;
+	width: 60%;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+}
+
+.action {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+.actionCounts {
+	margin-left: 1rem;
+}
+
+/* right content area */
+
+.rightSideBar {
+	width: 477px;
+	padding: 1rem;
+	position: sticky;
+	top: 0;
+	border-left: 1px solid #ebeef0;
+}
+
+.bookImageArea {
+	margin-right: 1rem;
+}
+
+.bookImage {
+	border-radius: 20px;
+	box-shadow: 0 4px 4px 0 #bbb;
+}
+
+.searchBarContainer {
+	display: flex;
+	justify-content: center;
+	padding: 1rem;
+}
+
+.searchBar {
+	width: 80%;
+	height: 39px;
+	background: #ebeef0;
+	border-radius: 20px;
+	padding-left: 2rem;
+	outline: none;
+	border: none;
+	box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 2);
+}
+
+.purposeLabel {
+	color: white;
+}
+
+.bookDetails {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookCard {
+	height: 211px;
+	background: white;
+	border-radius: 20px;
+	padding: 1rem;
+	margin-bottom: 2rem;
+}
