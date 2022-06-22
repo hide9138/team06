@@ -2,8 +2,6 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["static.overlay-tech.com"]
+    domains: ['static.overlay-tech.com','lh3.googleusercontent.com']
   }
 }
-
-module.exports = nextConfig

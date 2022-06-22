@@ -1,43 +1,55 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import firebase, { auth } from '../firebase/firebase'
+import firebase, { auth, db } from '../firebase/firebase'
 
 const AuthContext = createContext()
 
 export const useAuth = () => {
-    return useContext(AuthContext)
+	return useContext(AuthContext)
 }
 
 const AuthProvider = ({ children }) => {
-    const [currentUser, setCurrentUser] = useState(null)
-    const [loading, setLoading] = useState(true)
+	const [currentUser, setCurrentUser] = useState(null)
+	const [loading, setLoading] = useState(true)
 
-    const login = () => {
-        const provider = new firebase.auth.GoogleAuthProvider()
-        return auth.signInWithRedirect(provider)
-    }
+	const login = () => {
+		const provider = new firebase.auth.GoogleAuthProvider()
+		return auth
+			.signInWithRedirect(provider)
+			.then(result => {
+				const user = result.user
+				const userRef = db.collection('users').doc(user.uid)
+				userRef.set({
+					displayName: user.displayName,
+					photoURL: user.photoURL,
+					email: user.email,
+					likeBookCount: 0,
+					createTime: firebase.firestore.FieldValue.serverTimestamp(),
+					updateTime: firebase.firestore.FieldValue.serverTimestamp(),
+				})
+			})
+			.catch(error => {
+				console.log(error)
+			})
+	}
 
-    const logout = () => {
-        return auth.signOut()
-    }
+	const logout = () => {
+		return auth.signOut()
+	}
 
-    useEffect(() => {
-        return auth.onAuthStateChanged(user => {
-            setCurrentUser(user)
-            setLoading(false)
-        })
-    }, [])
+	useEffect(() => {
+		return auth.onAuthStateChanged(user => {
+			setCurrentUser(user)
+			setLoading(false)
+		})
+	}, [])
 
-    const value = {
-        currentUser,
-        login,
-        logout
-    }
+	const value = {
+		currentUser,
+		login,
+		logout,
+	}
 
-    return (
-        <AuthContext.Provider value={value}>
-            {loading ? <p>loading...</p> : children}
-        </AuthContext.Provider>
-    )
+	return <AuthContext.Provider value={value}>{loading ? <p>loading...</p> : children}</AuthContext.Provider>
 }
 
 export default AuthProvider
