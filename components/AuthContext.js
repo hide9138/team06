@@ -13,16 +13,21 @@ const AuthProvider = ({ children }) => {
 
 	const login = () => {
 		const provider = new firebase.auth.GoogleAuthProvider()
+
+		return auth.signInWithRedirect(provider)
+		// .signInWithPopup(provider)
+	}
+	const createUser = () => {
 		return auth
-			.signInWithRedirect(provider)
+			.getRedirectResult()
 			.then(result => {
 				const user = result.user
 				const userRef = db.collection('users').doc(user.uid)
+				console.log(user)
 				userRef.set({
 					displayName: user.displayName,
-					photoURL: user.photoURL,
 					email: user.email,
-					likeBookCount: 0,
+					photoURL: user.photoURL,
 					createTime: firebase.firestore.FieldValue.serverTimestamp(),
 					updateTime: firebase.firestore.FieldValue.serverTimestamp(),
 				})
@@ -47,6 +52,7 @@ const AuthProvider = ({ children }) => {
 		currentUser,
 		login,
 		logout,
+		createUser,
 	}
 
 	return <AuthContext.Provider value={value}>{loading ? <p>loading...</p> : children}</AuthContext.Provider>
