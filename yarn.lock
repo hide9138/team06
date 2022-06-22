@@ -32,13 +32,13 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
+
 "@fastify/busboy@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@fastify/busboy/-/busboy-1.1.0.tgz#4472f856e2bb5a9ee34ad64b93891b73b73537ca"
   integrity sha512-Fv854f94v0CzIDllbY3i/0NJPNBRNLDawf3BTYVGCe9VrIIs3Wi7AFx24F9NzCxdf0wyx/x0Q9kEVnvDOPnlxA==
   dependencies:
     text-decoding "^1.0.0"
-
 "@firebase/analytics-compat@0.1.11":
   version "0.1.11"
   resolved "https://registry.yarnpkg.com/@firebase/analytics-compat/-/analytics-compat-0.1.11.tgz#0dd12c628e063bba2851b4da57fe67024c52ae2d"
@@ -181,6 +181,7 @@
     tslib "^2.1.0"
 
 "@firebase/database-types@0.9.9", "@firebase/database-types@^0.9.7":
+"@firebase/database-types@0.9.9":
   version "0.9.9"
   resolved "https://registry.yarnpkg.com/@firebase/database-types/-/database-types-0.9.9.tgz#73fe21acb278555478e0a71a64b066147e998711"
   integrity sha512-Zp86fHzQFZKYVM7yDWVAgVTeOJ39g2wT0ijeiN0jpHAHceeoV013q3jPIIGuooV2HMwWOTIBZGqh+DxrHMFyUw==
@@ -2353,6 +2354,7 @@ next@12.1.6:
     "@next/swc-win32-arm64-msvc" "12.1.6"
     "@next/swc-win32-ia32-msvc" "12.1.6"
     "@next/swc-win32-x64-msvc" "12.1.6"
+
 
 node-fetch@2.6.7, node-fetch@^2.6.1, node-fetch@^2.6.7:
   version "2.6.7"
