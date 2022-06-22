@@ -5,3 +5,4 @@ const nextConfig = {
     domains: ['static.overlay-tech.com','lh3.googleusercontent.com']
   }
 }
+module.exports = nextConfig
