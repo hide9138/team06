@@ -20,7 +20,7 @@ export const GetBook = bookId => {
 			setBook(outData)
 		}
 		fetchData()
-	}, [])
+	}, [bookId])
 
 	return book
 }
@@ -46,7 +46,7 @@ export const SerchBooks = serchWord => {
 			setBooks(outData)
 		}
 		fetchData()
-	}, [])
+	}, [serchWord])
 
 	return books
 }
