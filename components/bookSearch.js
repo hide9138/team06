@@ -63,7 +63,7 @@ const BookSearchbar = () => {
       </div>
       {results.map((result, i) => (
         <div className={`${results.length - 1 === i && styles.content__result__last}`} key={result.id}>
-          <Link href={`books/${result.id}`}>
+          <Link href={`/books/${result.id}`}>
             <a>
               <BookCard key={i} book={result} />
             </a>
