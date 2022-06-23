@@ -1,0 +1,76 @@
+.sidebar {
+	width: 334px;
+	padding: 1.5rem 1rem;
+	display: flex;
+	position: fixed;
+	top: 0;
+	height: 100%;
+	flex-direction: column;
+}
+
+.nav__menu {
+	margin-top: 50px;
+	color: white;
+}
+
+.nav__menu__item {
+	padding: 0.3rem;
+	padding-left: 0.5rem;
+	border-radius: 30px;
+}
+
+.nav__menu__item:hover {
+	background: #4b9a5a;
+}
+
+.nav__menu__link {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	font-size: 24px;
+	padding: 0.5rem;
+}
+
+.nav__menu__link__active {
+	font-weight: bold;
+}
+
+.nav__menu__image__container {
+	width: 30px;
+	height: 30px;
+	margin-right: 1rem;
+}
+
+.nav__menu__photo {
+	border-radius: 9999px;
+}
+
+.btn__container {
+	margin-top: 5rem;
+	display: flex;
+	justify-content: center;
+}
+
+.btn__output {
+	width: 80%;
+	height: 50px;
+	border: 1px solid #ddd;
+	border-radius: 20px;
+	box-shadow: 0px 8px 8px 0px #000;
+	font-weight: 900;
+	font-size: 15px;
+	cursor: pointer;
+	align-items: center;
+}
+
+.btn__logout {
+	width: 80%;
+	height: 50px;
+	border: 1px solid #ddd;
+	border-radius: 20px;
+	box-shadow: 0px 8px 8px 0px #000;
+	font-weight: 900;
+	font-size: 15px;
+	cursor: pointer;
+	align-items: center;
+}
