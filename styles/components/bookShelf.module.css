@@ -1,0 +1,21 @@
+.bookshelf__container {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 2rem;
+	overflow: hidden;
+	padding: 1.2rem;
+}
+
+.bookshelf__book__image {
+	position: relative;
+}
+
+.first__row__item::before {
+	content: '';
+	width: 1200%;
+	height: 15px;
+	position: absolute;
+	bottom: -2px;
+	left: -500%;
+	background: #bdc5cd;
+}
