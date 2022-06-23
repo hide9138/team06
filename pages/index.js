@@ -3,10 +3,11 @@ import { useAuth } from '../components/AuthContext'
 
 export default function Login() {
 	const router = useRouter()
-	const { currentUser, logout, login } = useAuth()
+	const { currentUser, createUser, logout, login } = useAuth()
 
 	const handleLoginButton = () => {
 		login()
+		createUser()
 		router.push('books')
 	}
 
