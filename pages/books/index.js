@@ -3,7 +3,7 @@ import Image from 'next/image'
 import styles from '../../styles/Homepage.module.css'
 import Sidebar from '../../components/sidebar'
 import BookSearch from '../../components/bookSearch'
-
+import { useAuth } from '../../components/AuthContext'
 
 const output = {
   userPhotoUrl: 'https://static.overlay-tech.com/assets/3d3c257d-25ef-46ac-8f50-17b6d4792414.png',
@@ -18,6 +18,12 @@ const output = {
 const outputs = new Array(5).fill(output);
 
 const Home = () => {
+  const { currentUser } = useAuth()
+
+  if (!currentUser) {
+    return <></>
+  }
+
   return (
     <div className={styles.container}>
       {/* Sidebar */}
