@@ -3,13 +3,14 @@ import 'firebase/compat/auth'
 import 'firebase/compat/firestore'
 
 const firebaseConfig = {
-	apiKey: 'AIzaSyBsT2eipLuMQPw_Fjzd5jzwfGMbpjRnHL8',
-	authDomain: 'team06-879b7.firebaseapp.com',
-	projectId: 'team06-879b7',
-	storageBucket: 'team06-879b7.appspot.com',
-	messagingSenderId: '500843110114',
-	appId: '1:500843110114:web:1ed6aafa4616bcabcbc8bb',
-	measurementId: 'G-MLB3DT7QD9',
+	apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+	authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+	databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
+	projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+	storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+	messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+	appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+	measurementId: process.env.NEXT_PUBLIC_FIREBASE_MESUREMENT_ID
 }
 if (!firebase.apps.length) {
 	firebase.initializeApp(firebaseConfig)
