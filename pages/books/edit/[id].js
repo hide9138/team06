@@ -1,8 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
-import styles from '../../styles/books/New2.module.css'
+import styles from '../../../styles/books/Edit.module.css'
 
 export default function Home() {
 	return (
@@ -39,14 +38,11 @@ const BookCard = () => {
 	return (
 		<div className={styles.bookCard}>
 			<div className={styles.flexWrapperFour}>
-				<Image
+				<img
+					alt=""
 					className={styles.num2022061316151}
 					src="https://static.overlay-tech.com/assets/67e8a8e7-67fb-42de-83f4-ede6506fb8f8.png"
-					width="159"
-					height="229"
-					alt="book"
 				/>
-
 				<div className={styles.flexWrapperFive}>
 					<p className={styles.title}>本タイトル</p>
 					<p className={styles.author}>著者 うんこまん</p>
