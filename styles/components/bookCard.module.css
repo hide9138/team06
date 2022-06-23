@@ -1,0 +1,27 @@
+.book__card {
+	height: 211px;
+	background: white;
+	border-radius: 20px;
+	padding: 1rem;
+	margin-bottom: 2rem;
+}
+
+.book__info {
+	display: flex;
+	flex-direction: row;
+}
+
+.book__image__area {
+	margin-right: 1rem;
+}
+
+.book__image {
+	border-radius: 20px;
+	box-shadow: 0 4px 4px 0 #bbb;
+}
+
+.book__details {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
