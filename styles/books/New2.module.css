@@ -21,6 +21,36 @@
 	margin-left: 0.32px;
 } */
 
+.batsu {
+	position: absolute;
+	/* display: block; */
+	/* position: relative; */
+	left: 50px;
+	top: 50px;
+	width: 30px;
+	height: 30px;
+	background-color: #fff;
+}
+.batsu::before,
+.batsu::after {
+	/* 共通設定 */
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 5px; /* 棒の幅（太さ） */
+	height: 30px; /* 棒の高さ */
+	background: #fff;
+}
+
+.batsu::before {
+	transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.batsu::after {
+	transform: translate(-50%, -50%) rotate(-45deg);
+}
+
 .num3 {
 	text-align: center;
 	font-family: 'Inter';
@@ -112,12 +142,6 @@
 	line-height: normal;
 	color: white;
 }
-.rectangle22 {
-	width: 86px;
-	height: 56px;
-	background-color: white;
-	border-radius: 20px;
-}
 
 .flexWrapperThree {
 	margin-bottom: 48px;
@@ -129,6 +153,16 @@
 	height: 56px;
 	background-color: white;
 	border-radius: 20px;
+	border: none;
+	font-size: 20px;
+}
+.rectangle22 {
+	width: 86px;
+	height: 56px;
+	font-size: 20px;
+	background-color: white;
+	border-radius: 20px;
+	border: none;
 }
 
 .rectangle19:not(:last-of-type) {
@@ -143,6 +177,10 @@
 		0 4px 4px 0 rgba(0, 0, 0, 0.25);
 	text-align: center;
 }
+.group36:active {
+	transform: translateY(-5px);
+}
+
 .text {
 	margin: 15px 0;
 	color: black;
