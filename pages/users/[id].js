@@ -3,10 +3,9 @@ import { useRouter } from 'next/router'
 import BookShelf from '../../components/bookShelf'
 import Image from 'next/image'
 import styles from '../../styles/users/Home.module.css'
-import Sidebar from '../../components/sidebar'
-import BookSearch from '../../components/bookSearch'
-import { useAuth } from '../../components/AuthContext'
-
+import { useUser } from '../../components/UserContext'
+import OutputCard from '../../components/outputCard'
+import Layout from '../../components/layout'
 import EditProfileModal from '../../components/editProfileModal'
 
 const output = {
@@ -23,18 +22,21 @@ const output = {
 
 const outputs = new Array(5).fill(output);
 
-const UserProfile = ({ currentUser }) => {
+const UserProfile = () => {
+  const { id, displayName, selfIntroduction, photoURL } = useUser()
+  if (!id) return null
+
   return (
     <div className={styles.user__profile__container}>
       <div className={styles.user__profile__info__container}>
         <div className={styles.user__profile__info__block}>
-          <Image src={currentUser.photoURL} width={90} height={90} alt="user photo" className={styles.user__image} />
+          <Image src={photoURL} width={90} height={90} alt="user photo" className={styles.user__image} />
           <div className={styles.user__profile__info}>
-            <h4 className={styles.user__display__name}>{currentUser.displayName}</h4>
-            <p className={styles.username}>@{currentUser.uid.slice(0, 5)}</p>
+            <h4 className={styles.user__display__name}>{displayName}</h4>
+            <p className={styles.username}>@{id.slice(0, 5)}</p>
           </div>
         </div>
-        <p className={styles.user__profile__info__text}>好きな本はうんこまんです</p>
+        <p className={styles.user__profile__info__text}>{selfIntroduction}</p>
         <div className={styles.user__relations}>
           <p className={styles.user__profile__info__text}>
             フォロー <span className={styles.cnt}>100</span>
@@ -46,51 +48,6 @@ const UserProfile = ({ currentUser }) => {
       </div>
       {/* プロフィール編集用モーダル */}
       <EditProfileModal />
-    </div>
-  )
-}
-
-const OutputCard = ({ output }) => {
-  return (
-    <div className={styles.content__output}>
-      {/* User */}
-      <div className={styles.user__container}>
-        <div className={styles.user__image__area}>
-          <Image src={output.userPhotoUrl} width={50} height={50} alt="user photo" className={styles.user__image} />
-        </div>
-        <div className={styles.user__info}>
-          <p className={styles.user__name}>{output.userName}</p>
-          <p className={styles.output__words}>
-            <span>P. {output.page}</span>
-            <span>{` ｢${output.word1}｣`}</span>
-            <span>{` ｢${output.word2}｣`}</span>
-            <span>{` ｢${output.word3}｣`}</span>
-          </p>
-        </div>
-      </div>
-      {/* Book */}
-      <div className={styles.book__container}>
-        <div className={styles.book__image__area}>
-          <Image src={output.bookPhotoUrl} width={72} height={100} alt="user photo" className={styles.book__image} />
-        </div>
-        <div className={styles.book__info}>
-          <p>{output.bookTitle}</p>
-          <p>著者名：{output.bookAuthor}</p>
-        </div>
-      </div>
-
-      <div className={styles.btn__group}>
-        <button type="button" className={styles.btn__crud}>編集</button>
-        <button type="button" className={styles.btn__crud}>削除</button>
-      </div>
-
-      {/* Button */}
-      <div className={styles.btn__container}>
-        <div className={styles.btn}>
-          <Image src="https://static.overlay-tech.com/assets/dea603c0-b98a-4f6f-89ff-861082b18421.svg" width="16" height="16" alt="like" />
-          <p className={styles.count}>6</p>
-        </div>
-      </div>
     </div>
   )
 }
@@ -108,44 +65,30 @@ const Outputs = () => {
 const contents = [BookShelf, Outputs, Outputs]
 
 const Home = () => {
-  const { id } = useRouter().query
-  const { currentUser } = useAuth()
-
   const [tabIndex, setTabIndex] = useState(0)
 
-  if (!currentUser) {
-    return <></>
-  }
-
-
   return (
-    <div className={styles.container}>
-      {/* Sidebar */}
-      <Sidebar />
-      {/* Main */}
-      <main className={styles.main}>
-        <UserProfile currentUser={currentUser} />
+    <main className={styles.main}>
+      <UserProfile />
 
-        {/* Tab */}
-        <div className={styles.tabs}>
-          {['本棚', 'アウトプット', 'いいね'].map((lable, i) => (
-            <button key={i} onClick={() => setTabIndex(i)} className={`${styles.tab} ${tabIndex === i && styles.active__tab}`}>
-              {lable}
-            </button>
-          ))}
-        </div>
+      {/* Tab */}
+      <div className={styles.tabs}>
+        {['本棚', 'アウトプット', 'いいね'].map((lable, i) => (
+          <button key={i} onClick={() => setTabIndex(i)} className={`${styles.tab} ${tabIndex === i && styles.active__tab}`}>
+            {lable}
+          </button>
+        ))}
+      </div>
 
-        {/* Tab contents */}
-        <div className={styles.tab__content__container}>
-          {contents[tabIndex]()}
-        </div>
+      {/* Tab contents */}
+      <div className={styles.tab__content__container}>
+        {contents[tabIndex]()}
+      </div>
 
-      </main>
-      {/* Book Search Area */}
-      <BookSearch />
-    </div>
+    </main>
   )
 }
 
-export default Home;
+Home.getLayout = (page) => <Layout>{page}</Layout>
 
+export default Home;
