@@ -21,63 +21,13 @@ const output = {
   bookTitle: '本のタイトル'
 }
 
-{/*const output = {
-  userPhotoUrl: 'https://static.overlay-tech.com/assets/3d3c257d-25ef-46ac-8f50-17b6d4792414.png',
-  userName: '伊藤マイケル',
-  page: 24,
-  threeWords: ['失敗', '貴重な学び', '成功の可能性'],
-  bookPhotoUrl: 'https://static.overlay-tech.com/assets/8fcdb0ac-9c3a-436c-883e-6249e0f97503.png',
-  bookTitle: '本のタイトル',
-  bookAuthor: '',
-  word1: "fdさ",
-  word2: "あdfs",
-  word3: "ファds",
-}*/}
-
 const outputs = new Array(5).fill(output);
 
-
-const LikeButton = (bookRef) => {
-  const [count, setCount] = useState()
+const Home = () => {
+  const [tweets, setTweets] = useState([])
   const { currentUser } = useAuth()
   const userRef = db.collection('users').doc(currentUser.uid)
-  const querySnapshot = db.collection('likes')
-    .where('userRef', '==', userRef)
-    .where('bookRef', '==', bookRef)
-    .get()
-    .then(querySnapshot => {
-      const size = querySnapshot.size
-      setCount(size)
-    })
-   
-  const handleClick = () => {
-    useEffect(() => {
-      db.collection('likes').add({
-        userRef: userRef,
-        bookRef: bookRef
-      })
-      const querySnapshot = db.collection('likes')
-        .where('userRef', '==', userRef)
-        .where('bookRef', '==', bookRef)
-        .get()
-        .then(querySnapshot => {
-          const size = querySnapshot.size
-          setCount(size)
-        })      
-    })
-  }
-  setCount(10)
-  const number=10
-  return (
-  <span className={styles.btn} onClick={handleClick}>
-    ♥ {number}
-  </span>
-  )
-}
 
-
-const Home = () => {
-  const [books, setBooks] = useState([])
   const LikeButton = (bookRef) => {
     const [count, setCount] = useState()
     const { currentUser } = useAuth()
@@ -95,7 +45,7 @@ const Home = () => {
         userRef: userRef,
         bookRef: bookRef
       })
-      const querySnapshot = db.collection('likes')
+      db.collection('likes')
         .where('userRef', '==', userRef)
         .where('bookRef', '==', bookRef)
         .get()
@@ -108,7 +58,7 @@ const Home = () => {
   }
   
 
-  const { currentUser } = useAuth()
+  
 
   if (!currentUser) {
     return <></>
@@ -130,7 +80,7 @@ const Home = () => {
               <div className={styles.user__info}>
                 <p className={styles.user__name}>{output.userName}</p>
                 <p className={styles.output__words}>
-                <span>P. {output.page} 「{output.word1}」 「{output.word2}」 「{output.word3}」</span>
+                <span>P. {output.pageNumber} 「{output.word1}」 「{output.word2}」 「{output.word3}」</span>
                 </p>
               </div>
             </div>
