@@ -15,12 +15,12 @@ export const GetBook = bookId => {
 				description: item.volumeInfo.description,
 				pageCount: item.volumeInfo.pageCount,
 				smallImageLink: item.volumeInfo.imageLinks ? item.volumeInfo.imageLinks.smallThumbnail : '',
-				ImageLink: item.volumeInfo.imageLinks ? item.volumeInfo.imageLinks.thumbnail : '',
+				imageLink: item.volumeInfo.imageLinks ? item.volumeInfo.imageLinks.thumbnail : '',
 			}
 			setBook(outData)
 		}
 		fetchData()
-	}, [])
+	}, [bookId])
 
 	return book
 }
@@ -40,13 +40,13 @@ export const SerchBooks = serchWord => {
 					description: item.volumeInfo.description,
 					pageCount: item.volumeInfo.pageCount,
 					smallImageLink: item.volumeInfo.imageLinks ? item.volumeInfo.imageLinks.smallThumbnail : '',
-					ImageLink: item.volumeInfo.imageLinks ? item.volumeInfo.imageLinks.thumbnail : '',
+					imageLink: item.volumeInfo.imageLinks ? item.volumeInfo.imageLinks.thumbnail : '',
 				}
 			})
 			setBooks(outData)
 		}
 		fetchData()
-	}, [])
+	}, [serchWord])
 
 	return books
 }
