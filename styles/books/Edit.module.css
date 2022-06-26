@@ -1,0 +1,156 @@
+.container {
+	background-color: rgba(89, 188, 108, 1);
+	min-width: 100vh;
+	min-height: 100vh;
+	max-height: 100vh;
+}
+.row {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	/* flex-direction: column; */
+}
+/* .line6 {
+	width: 60px;
+	margin-bottom: 0.68px;
+}
+
+.line7 {
+	width: 60px;
+	margin-bottom: 21px;
+	margin-left: 0.32px;
+} */
+
+.num3 {
+	text-align: center;
+	font-family: 'Inter';
+	font-size: 50px;
+	font-weight: 400;
+	line-height: normal;
+	color: white;
+	margin: 30px 0;
+	text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+	letter-spacing: 0.7px;
+}
+
+.bookCard {
+	background-color: white;
+	width: 40%;
+	margin-bottom: 30px;
+	border-radius: 20px;
+	padding: 29px 27px 14px 19px;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+.flexWrapperFour {
+	margin-bottom: 5px;
+	display: flex;
+	align-items: flex-start;
+}
+.num2022061316151 {
+	width: 159px;
+	height: 229px;
+	margin-right: 23px;
+	box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+	border-radius: 20px;
+}
+
+.flexWrapperFive {
+	padding: 54px 0 0;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+}
+.title {
+	height: 25px;
+	width: 337px;
+	color: black;
+	display: flex;
+	align-items: center;
+	margin-bottom: 89px;
+	letter-spacing: 0.28px;
+	font-family: 'Inter';
+	font-size: 20px;
+	font-weight: 400;
+	line-height: normal;
+}
+
+.author {
+	width: 337px;
+	color: black;
+	letter-spacing: 0.28px;
+	font-family: 'Inter';
+	font-size: 20px;
+	font-weight: 400;
+	line-height: normal;
+}
+.booksapidescription {
+	height: 66px;
+	width: 531px;
+	color: black;
+	display: flex;
+	align-items: center;
+	margin-left: 8px;
+	letter-spacing: 0.28px;
+	font-family: 'Inter';
+	font-size: 20px;
+	font-weight: 400;
+	line-height: normal;
+}
+
+.flexWrapperTwo {
+	margin-bottom: 31px;
+	padding: 0 40px 0 0;
+	display: flex;
+	justify-content: center;
+}
+
+.p {
+	margin-right: 18px;
+	font-family: 'Inter';
+	font-size: 40px;
+	font-weight: 400;
+	line-height: normal;
+	color: white;
+}
+.rectangle22 {
+	width: 86px;
+	height: 56px;
+	background-color: white;
+	border-radius: 20px;
+}
+
+.flexWrapperThree {
+	margin-bottom: 48px;
+	display: flex;
+	justify-content: space-around;
+}
+.rectangle19 {
+	width: 310px;
+	height: 56px;
+	background-color: white;
+	border-radius: 20px;
+}
+
+.rectangle19:not(:last-of-type) {
+	margin-right: 57px;
+}
+
+.group36 {
+	background-color: white;
+	width: 320px;
+	border-radius: 20px;
+	box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25), 0 4px 4px 0 rgba(0, 0, 0, 0.25), 0 4px 4px 0 rgba(0, 0, 0, 0.25),
+		0 4px 4px 0 rgba(0, 0, 0, 0.25);
+	text-align: center;
+}
+.text {
+	margin: 15px 0;
+	color: black;
+	font-family: 'Inter';
+	font-size: 30px;
+	font-weight: 400;
+	line-height: normal;
+}
