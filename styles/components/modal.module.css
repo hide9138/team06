@@ -1,0 +1,39 @@
+.overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	z-index: 9999;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.content {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	z-index: 10000;
+	width: 50%;
+	min-height: 500px;
+	padding: 1em;
+	background: #fff;
+
+	border-radius: 20px;
+
+	animation-name: fadeup;
+	animation-duration: 0.5s;
+}
+
+@keyframes fadeup {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}

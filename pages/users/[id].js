@@ -7,6 +7,8 @@ import Sidebar from '../../components/sidebar'
 import BookSearch from '../../components/bookSearch'
 import { useAuth } from '../../components/AuthContext'
 
+import EditProfileModal from '../../components/editProfileModal'
+
 const output = {
   userPhotoUrl: 'https://static.overlay-tech.com/assets/3d3c257d-25ef-46ac-8f50-17b6d4792414.png',
   userName: '伊藤マイケル',
@@ -42,7 +44,8 @@ const UserProfile = ({ currentUser }) => {
           </p>
         </div>
       </div>
-      <button className={styles.editButton}>プロフィール編集</button>
+      {/* プロフィール編集用モーダル */}
+      <EditProfileModal />
     </div>
   )
 }
