@@ -3,8 +3,25 @@ import Image from 'next/image'
 import styles from '../../styles/Homepage.module.css'
 import { useAuth } from '../../components/AuthContext'
 import Layout from '../../components/layout'
+import { createContext, useContext, useEffect, useState } from 'react'
+import firebase, { db } from '../../firebase/firebase'
+import { useRouter } from 'next/router'
 
 const output = {
+  bookRef: '/books/G91h8fkOEUgznkUdZwX7',
+  createTime: '2022年6月27日 0:12:16 UTC+9',
+  pageNumber: 3,
+  updateTime: '2022年6月27日 0:12:16 UTC+9',
+  userRef: '/users/xAWf1pI1q9hoqNbtc29Q25tkD0c2',
+  word1: "fdさ",
+  word2: "あdfs",
+  word3: "ファds",
+  userPhotoUrl: 'https://static.overlay-tech.com/assets/3d3c257d-25ef-46ac-8f50-17b6d4792414.png',
+  bookPhotoUrl: 'https://static.overlay-tech.com/assets/8fcdb0ac-9c3a-436c-883e-6249e0f97503.png',
+  bookTitle: '本のタイトル'
+}
+
+{/*const output = {
   userPhotoUrl: 'https://static.overlay-tech.com/assets/3d3c257d-25ef-46ac-8f50-17b6d4792414.png',
   userName: '伊藤マイケル',
   page: 24,
@@ -12,11 +29,85 @@ const output = {
   bookPhotoUrl: 'https://static.overlay-tech.com/assets/8fcdb0ac-9c3a-436c-883e-6249e0f97503.png',
   bookTitle: '本のタイトル',
   bookAuthor: '',
-}
+  word1: "fdさ",
+  word2: "あdfs",
+  word3: "ファds",
+}*/}
 
 const outputs = new Array(5).fill(output);
 
+
+const LikeButton = (bookRef) => {
+  const [count, setCount] = useState()
+  const { currentUser } = useAuth()
+  const userRef = db.collection('users').doc(currentUser.uid)
+  const querySnapshot = db.collection('likes')
+    .where('userRef', '==', userRef)
+    .where('bookRef', '==', bookRef)
+    .get()
+    .then(querySnapshot => {
+      const size = querySnapshot.size
+      setCount(size)
+    })
+   
+  const handleClick = () => {
+    useEffect(() => {
+      db.collection('likes').add({
+        userRef: userRef,
+        bookRef: bookRef
+      })
+      const querySnapshot = db.collection('likes')
+        .where('userRef', '==', userRef)
+        .where('bookRef', '==', bookRef)
+        .get()
+        .then(querySnapshot => {
+          const size = querySnapshot.size
+          setCount(size)
+        })      
+    })
+  }
+  setCount(10)
+  const number=10
+  return (
+  <span className={styles.btn} onClick={handleClick}>
+    ♥ {number}
+  </span>
+  )
+}
+
+
 const Home = () => {
+  const [books, setBooks] = useState([])
+  const LikeButton = (bookRef) => {
+    const [count, setCount] = useState()
+    const { currentUser } = useAuth()
+    const userRef = db.collection('users').doc(currentUser.uid)
+    db.collection('likes')
+      .where('userRef', '==', userRef)
+      .where('bookRef', '==', bookRef)
+      .get()
+      .then(querySnapshot => {
+        const size = querySnapshot.size
+        setCount(size)
+      })
+    const handleClick = () => {
+      db.collection('likes').add({
+        userRef: userRef,
+        bookRef: bookRef
+      })
+      const querySnapshot = db.collection('likes')
+        .where('userRef', '==', userRef)
+        .where('bookRef', '==', bookRef)
+        .get()
+        .then(querySnapshot => {
+          const size = querySnapshot.size
+          setCount(size)
+        })
+    }
+    return <span className={styles.btn} onClick={handleClick}>♥ {count}</span>
+  }
+  
+
   const { currentUser } = useAuth()
 
   if (!currentUser) {
@@ -39,10 +130,7 @@ const Home = () => {
               <div className={styles.user__info}>
                 <p className={styles.user__name}>{output.userName}</p>
                 <p className={styles.output__words}>
-                  <span>P. {output.page}</span>
-                  {output.threeWords.map(word => (
-                    <span key={`${i}-${word}`}>{`「${word}」`}</span>
-                  ))}
+                <span>P. {output.page} 「{output.word1}」 「{output.word2}」 「{output.word3}」</span>
                 </p>
               </div>
             </div>
@@ -58,10 +146,7 @@ const Home = () => {
             </div>
             {/* Button */}
             <div className={styles.btn__container}>
-              <div className={styles.btn}>
-                <Image src="https://static.overlay-tech.com/assets/dea603c0-b98a-4f6f-89ff-861082b18421.svg" width="16" height="16" alt="like" />
-                <p className={styles.count}>6</p>
-              </div>
+              <LikeButton bookRef={output.bookRef} />
             </div>
           </div>
         ))}
