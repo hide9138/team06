@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useAuth } from './AuthContext'
 import { useRouter } from 'next/router'
 import styles from '../styles/components/sidebar.module.css'
-
+import { useUser } from './UserContext'
 
 const MenuList = ({ href, iconPath, text, currentPath }) => {
   return (
@@ -23,9 +23,14 @@ const MenuList = ({ href, iconPath, text, currentPath }) => {
 }
 
 const SideBar = () => {
-  const { currentUser, logout } = useAuth()
+  const { logout } = useAuth()
+  const { id, photoURL } = useUser()
 
   const router = useRouter()
+
+  if (!id) {
+    return <></>
+  }
 
   const { asPath } = router
   const currentPath = asPath.split('/')[1]
@@ -42,7 +47,7 @@ const SideBar = () => {
   const links = [
     { href: '/books/', iconPath: 'https://static.overlay-tech.com/assets/c5fee165-810f-4657-a7f5-0c8b69b98c1a.svg', text: 'ホーム' },
     { href: '/message', iconPath: 'https://static.overlay-tech.com/assets/d704290d-0dc2-4c92-88c9-f094852e5678.svg', text: 'メッセージ' },
-    { href: `/users/${currentUser.uid}`, iconPath: `${currentUser.photoURL}`, text: 'プロフィール' },
+    { href: `/users/${id}`, iconPath: `${photoURL}`, text: 'プロフィール' },
   ]
 
   return (

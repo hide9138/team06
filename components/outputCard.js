@@ -30,6 +30,12 @@ const OutputCard = ({ output }) => {
           <p>著者名：{output.bookAuthor}</p>
         </div>
       </div>
+
+      <div className={styles.btn__group}>
+        <button type="button" className={styles.btn__crud}>編集</button>
+        <button type="button" className={styles.btn__crud}>削除</button>
+      </div>
+
       {/* Button */}
       <div className={styles.btn__container}>
         <div className={styles.btn}>
@@ -41,4 +47,5 @@ const OutputCard = ({ output }) => {
   )
 }
 
-export default OutputCard
+export default OutputCard;
+

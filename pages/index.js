@@ -8,7 +8,6 @@ export default function Login() {
 	const handleLoginButton = () => {
 		login()
 		createUser()
-		router.push('books')
 	}
 
 	const handleLogoutButton = () => {
