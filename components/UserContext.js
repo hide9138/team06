@@ -15,7 +15,7 @@ const UserProvider = ({ children }) => {
 
   useEffect(() => {
     return auth.onAuthStateChanged(user => {
-
+      if (!user) return
       const getUser = async () => {
         const userRef = db.collection('users').doc(user.uid)
         let userDoc = await userRef.get()
