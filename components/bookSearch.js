@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, memo } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import BookCard from './bookCard'
 import styles from '../styles/components/bookSearch.module.css'
-
+import firebase, { db } from '../firebase/firebase'
 
 // type Book = {
 //   id: string
@@ -15,30 +15,9 @@ import styles from '../styles/components/bookSearch.module.css'
 //   ImageLink: string
 // }
 
-const _results = [
-  {
-    id: 'fwaojf3wpjwnlw',
-    title: '本のタイトル',
-    authors: 'うんこまん',
-    description: '',
-    pageCount: 100,
-    smallImageLink: "",
-    ImageLink: 'https://static.overlay-tech.com/assets/bd07130e-33fa-4fcc-8f5f-be741bd81efa.png',
-  },
-  {
-    id: 'woawjofapwjw30ur',
-    title: '本のタイトル',
-    authors: 'うんこまん',
-    description: '',
-    pageCount: 100,
-    smallImageLink: "",
-    ImageLink: 'https://static.overlay-tech.com/assets/aad3ed2f-167e-4cf8-b56d-fbdd2d1294a8.png',
-  },
-]
-
-const BookSearchbar = () => {
-  // Book API から取得した結果用
-  const [results, setResults] = useState(_results)
+const BookSearchbar = memo(() => {
+  // デフォルトデータと検索語のデータ用
+  const [results, setResults] = useState([])
   // 入力値のデータ
   const [searchWord, setSearchWord] = useState("")
 
@@ -48,6 +27,38 @@ const BookSearchbar = () => {
     const searchedResults = await GetBooks(searchWord);
     setResults(searchedResults)
   }
+
+  useEffect(() => {
+    const getResults = async () => {
+      const bookRefs = await db.collection('books').get()
+      const bookList = bookRefs.docs.map(querySnapshot => {
+        return { ...querySnapshot.data(), id: querySnapshot.id }
+      })
+      const likeRefs = await db.collection('likes').get()
+      let counts = new Map()
+      likeRefs.docs.map(querySnapshot => {
+        const bookRef = querySnapshot.data().bookRef.id
+        if (counts.has(bookRef)) {
+          counts.set(bookRef, counts.get(bookRef) + 1)
+        } else {
+          counts.set(bookRef, 1)
+        }
+      })
+
+      counts[Symbol.iterator] = function* () {
+        yield* [...this.entries()].sort((a, b) => b[1] - a[1]);
+      }
+
+      const results = Array.from(counts).map(([key, _]) => {
+        const book = bookList.filter(book => book.id == key)[0]
+        return book
+      })
+
+      // 取得したい分だけ取る
+      setResults(results.slice(0, 6))
+    }
+    getResults()
+  }, [])
 
 
   return (
@@ -62,16 +73,20 @@ const BookSearchbar = () => {
         <p className={styles.title}>本を探す</p>
       </div>
       {results.map((result, i) => (
-        <div className={`${results.length - 1 === i && styles.content__result__last}`} key={result.id}>
-          <Link href={`/books/${result.id}`}>
-            <a>
-              <BookCard key={i} book={result} />
-            </a>
-          </Link>
-        </div>
+        result && (
+          <div className={`${results.length - 1 === i && styles.content__result__last}`} key={result.id}>
+            <Link href={`/books/${result.id}`}>
+              <a>
+                <BookCard key={i} book={result} />
+              </a>
+            </Link>
+          </div>
+        )
       ))}
     </div>
   )
-}
+})
+
+BookSearchbar.displayName = "BookSearchbar"
 
 export default BookSearchbar;
