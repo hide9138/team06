@@ -1,0 +1,111 @@
+.container {
+	min-height: 100vh;
+	background: #59bc6c;
+	display: flex;
+}
+
+.main {
+	width: 599px;
+	margin-left: 334px;
+	padding: 1rem 0;
+	border-right: 1px solid #ebeef0;
+	border-left: 1px solid #ebeef0;
+}
+
+.user__profile__container {
+	position: relative;
+}
+
+.user__profile__info__container {
+	display: flex;
+	flex-direction: column;
+	padding: 2rem;
+}
+
+.user__profile__info__block {
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: 2rem 2rem;
+}
+
+.user__profile__info {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	color: #fff;
+	height: fit-content;
+}
+
+.user__profile__info__text {
+	font-size: 20px;
+	color: #fff;
+	margin-bottom: 0.2rem;
+}
+
+.user__image {
+	border-radius: 9999px;
+}
+
+.user__display__name {
+	font-family: 'Inter';
+	font-size: 22px;
+	font-weight: 600;
+	margin: 0;
+	margin-bottom: 10px;
+}
+
+.username {
+	font-family: 'Inter';
+	font-size: 20px;
+	font-weight: 200;
+	line-height: normal;
+	margin: 0;
+}
+
+.editButton {
+	position: absolute;
+	top: 65px;
+	right: 22px;
+	height: 42px;
+	width: 172px;
+	border-radius: 20px;
+}
+
+.user__relations {
+	display: flex;
+	flex-direction: row;
+	gap: 2rem;
+	color: white;
+}
+
+.cnt {
+	font-weight: 800;
+}
+
+/* ________ tab _______ */
+.tabs {
+	width: 100%;
+	display: flex;
+	justify-content: space-around;
+	padding-bottom: 1rem;
+	border-bottom: 1px solid #ddd;
+	margin-bottom: 1rem;
+}
+
+.tab {
+	color: #ddd;
+	font-size: 18px;
+	cursor: pointer;
+	background: transparent;
+	outline: none;
+	border: none;
+}
+
+.active__tab {
+	color: white;
+}
+
+.tab__content__container {
+	padding: 1rem 2rem;
+}
