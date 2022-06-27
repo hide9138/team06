@@ -4,39 +4,32 @@ import styles from '../../styles/Homepage.module.css'
 import { useAuth } from '../../components/AuthContext'
 import Layout from '../../components/layout'
 import firebase, { db } from '../../firebase/firebase'
-import { doc, getDoc } from 'firebase/firestore'
-
-const output = {
-	userPhotoUrl: 'https://static.overlay-tech.com/assets/3d3c257d-25ef-46ac-8f50-17b6d4792414.png',
-	userName: '伊藤マイケル',
-	page: 24,
-	threeWords: ['失敗', '貴重な学び', '成功の可能性'],
-	bookPhotoUrl: 'https://static.overlay-tech.com/assets/8fcdb0ac-9c3a-436c-883e-6249e0f97503.png',
-	bookTitle: '本のタイトル',
-	bookAuthor: '',
-}
-
-const outputss = new Array(5).fill(output)
+import Link from 'next/link'
 
 const Home = () => {
 	const { currentUser } = useAuth()
-	const [tweets, setTweets] = useState([])
-	const [users, setUsers] = useState([])
+	// const [outputs, setOutputs] = useState([{ book: {}, user: {}, tweet: {} }])
+	const [outputs, setOutputs] = useState([])
 
 	useEffect(() => {
 		const getOutputs = async () => {
-			// const getUser = async userRef => {
-			// 	const userDoc = await userRef.get()
-			// 	const user = await userDoc.data()
-			// 	console.log(user)
-			// 	await setUsers([...users, user])
-			// }
-			const tweetRefs = await db.collection('tweets').get()
-			const tweetData = await tweetRefs.docs.map(querySnapshot => querySnapshot.data())
-			setTweets(tweetData)
+			const tweetRefs = await db.collection('tweets').orderBy('updateTime', 'desc').get()
+			const tweetList = tweetRefs.docs.map(querySnapshot => querySnapshot.data())
+			const userRefs = await db.collection('users').get()
+			const userList = userRefs.docs.map(querySnapshot => {
+				return { id: querySnapshot.id, ...querySnapshot.data() }
+			})
+			const bookRefs = await db.collection('books').get()
+			const bookList = bookRefs.docs.map(querySnapshot => {
+				return { ...querySnapshot.data(), id: querySnapshot.id }
+			})
+			const outputs = tweetList.map(tweet => {
+				const user = userList.filter(user => user.id == tweet.userRef.id)[0]
+				const book = bookList.filter(book => book.id == tweet.bookRef.id)[0]
+				return { user, tweet, book }
+			})
 
-			// tweetData.forEach(tweet => getUser(tweet.userRef))
-			tweetData.forEach(tweet => tweet.userRef.get().then(doc => setUsers([...users, doc.data()])))
+			setOutputs(outputs)
 		}
 		getOutputs()
 	}, [])
@@ -44,41 +37,50 @@ const Home = () => {
 	if (!currentUser) {
 		return <></>
 	}
-	console.log(users)
-	// console.log(tweets)
+
 	return (
 		<main className={styles.main}>
 			<div className={styles.title__container}>
 				<h1 className={styles.title}>みんなのアウトプット</h1>
 			</div>
 			<div className={styles.contents__container}>
-				{outputss.map((output, i) => (
+				{outputs.map((output, i) => (
 					<div key={i} className={styles.content__output}>
 						{/* User */}
-						<div className={styles.user__container}>
-							<div className={styles.user__image__area}>
-								<Image src={output.userPhotoUrl} width={50} height={50} alt="user photo" className={styles.user__image} />
+						{output.user && output.tweet && (
+							<div className={styles.user__container}>
+								<div className={styles.user__image__area}>
+									{output.user && (
+										<Link href={`/users/${output.user.id}`}>
+											<Image src={output.user.photoURL} width={50} height={50} alt="user photo" className={styles.user__image} />
+										</Link>
+									)}
+								</div>
+								<div className={styles.user__info}>
+									<p className={styles.user__name}>{output.user.displayName}</p>
+									<p className={styles.output__words}>
+										<span>P. {output.tweet.pageNumber}</span>
+										<span>{`「${output.tweet.word1}」`}</span>
+										<span>{`「${output.tweet.word2}」`}</span>
+										<span>{`「${output.tweet.word3}」`}</span>
+									</p>
+								</div>
 							</div>
-							<div className={styles.user__info}>
-								<p className={styles.user__name}>{output.userName}</p>
-								<p className={styles.output__words}>
-									<span>P. {output.page}</span>
-									{output.threeWords.map(word => (
-										<span key={`${i}-${word}`}>{`「${word}」`}</span>
-									))}
-								</p>
-							</div>
-						</div>
+						)}
 						{/* Book */}
-						<div className={styles.book__container}>
-							<div className={styles.book__image__area}>
-								<Image src={output.bookPhotoUrl} width={72} height={100} alt="user photo" className={styles.book__image} />
+						{output.book && (
+							<div className={styles.book__container}>
+								<div className={styles.book__image__area}>
+									<Link href={`/books/${output.book.id}`}>
+										<Image src={output.book.imageLink} width={72} height={100} alt="user photo" className={styles.book__image} />
+									</Link>
+								</div>
+								<div className={styles.book__info}>
+									<p>{output.book.title}</p>
+									<p>著者名：{output.book.authors.join(', ')}</p>
+								</div>
 							</div>
-							<div className={styles.book__info}>
-								<p>{output.bookTitle}</p>
-								<p>著者名：{output.bookAuthor}</p>
-							</div>
-						</div>
+						)}
 						{/* Button */}
 						<div className={styles.btn__container}>
 							<div className={styles.btn}>
