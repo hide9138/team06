@@ -2,10 +2,9 @@ import React from 'react'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
 import styles from '../../styles/books/Home.module.css'
-import Sidebar from '../../components/sidebar'
-import BookSearch from '../../components/bookSearch'
 import { useAuth } from '../../components/AuthContext'
 import OutputCard from '../../components/outputCard'
+import Layout from '../../components/layout'
 import { GetBook } from '../../components/BookApiFetch'
 import firebase, { db } from '../../firebase/firebase'
 
@@ -60,52 +59,47 @@ const Home = () => {
 	}
 
 	return (
-		<div className={styles.container}>
-			{/* Sidebar */}
-			<Sidebar />
-			{/* Main */}
-			<main className={styles.main}>
-				<div className={styles.title__container}>
-					<h1 className={styles.title}>本の詳細</h1>
-				</div>
+		<main className={styles.main}>
+			<div className={styles.title__container}>
+				<h1 className={styles.title}>本の詳細</h1>
+			</div>
 
-				<div className={styles.book__info__container}>
-					<div className={styles.book__info__block}>
-						<div className={styles.book__info__book__image__area}>
-							<Image
-								src="https://static.overlay-tech.com/assets/bd07130e-33fa-4fcc-8f5f-be741bd81efa.png"
-								width="220"
-								height="300"
-								alt="book image"
-								className={styles.book__info__book__image}
-							/>
-						</div>
-						<div className={styles.book__info__basic__info}>
-							<p className={styles.book__info__title}>本タイトル</p>
-							<p className={styles.book__info__author}>著者　うんこまん</p>
-							<p className={styles.book__info__publisher}>Publisher</p>
-							<p className={styles.book__info__publish__date}>PublishDate</p>
-						</div>
+			<div className={styles.book__info__container}>
+				<div className={styles.book__info__block}>
+					<div className={styles.book__info__book__image__area}>
+						<Image
+							src="https://static.overlay-tech.com/assets/bd07130e-33fa-4fcc-8f5f-be741bd81efa.png"
+							width="220"
+							height="300"
+							alt="book image"
+							className={styles.book__info__book__image}
+						/>
 					</div>
-					<div>
-						<p className={styles.book__info__description}>説明(BooksAPIでいうdescription）</p>
-					</div>
-					<div className={styles.btn__group}>
-						<button className={styles.btn}>詳細</button>
-						<button className={styles.btn} onClick={() => hondleCreateBook()}>
-							<Image src="/plus.svg" width="18" height="18" alt="plus" />
-							本棚に追加
-						</button>
+					<div className={styles.book__info__basic__info}>
+						<p className={styles.book__info__title}>本タイトル</p>
+						<p className={styles.book__info__author}>著者　うんこまん</p>
+						<p className={styles.book__info__publisher}>Publisher</p>
+						<p className={styles.book__info__publish__date}>PublishDate</p>
 					</div>
 				</div>
+				<div>
+					<p className={styles.book__info__description}>説明(BooksAPIでいうdescription）</p>
+				</div>
+				<div className={styles.btn__group}>
+					<button className={styles.btn}>詳細</button>
+					<button className={styles.btn} onClick={() => hondleCreateBook()}>
+						<Image src="/plus.svg" width="18" height="18" alt="plus" />
+						本棚に追加
+					</button>
+				</div>
+			</div>
 
-				{/* みんなのアウトプット */}
-				<Outputs />
-			</main>
-			{/* Book Search Area */}
-			<BookSearch />
-		</div>
+			{/* みんなのアウトプット */}
+			<Outputs />
+		</main>
 	)
 }
+
+Home.getLayout = page => <Layout>{page}</Layout>
 
 export default Home
