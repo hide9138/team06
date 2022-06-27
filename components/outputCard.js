@@ -4,7 +4,6 @@ import styles from '../styles/components/outputCard.module.css'
 import Link from 'next/link'
 
 const OutputCard = ({ key, output }) => {
-	console.log(output)
 	return (
 		<div key={key} className={styles.content__output}>
 			{/* User */}
