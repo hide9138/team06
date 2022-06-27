@@ -1,6 +1,21 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 
+const format = item => {
+	const info = item.volumeInfo
+	return {
+		id: item.id,
+		title: info.title,
+		authors: info.authors,
+		description: info.description,
+		pageCount: info.pageCount,
+		publisher: info.publisher,
+		publishedDate: info.publishedDate,
+		smallImageLink: info.imageLinks ? info.imageLinks.smallThumbnail : '',
+		imageLink: info.imageLinks ? info.imageLinks.thumbnail : '',
+	}
+}
+
 export const GetBook = bookId => {
 	const [book, setBook] = useState([])
 	useEffect(() => {
@@ -8,16 +23,7 @@ export const GetBook = bookId => {
 			const url = 'https://www.googleapis.com/books/v1/volumes/' + bookId
 			const result = await axios(url)
 			const item = result.data
-			const outData = {
-				id: item.id,
-				title: item.volumeInfo.title,
-				authors: item.volumeInfo.authors,
-				description: item.volumeInfo.description,
-				pageCount: item.volumeInfo.pageCount,
-				smallImageLink: item.volumeInfo.imageLinks ? item.volumeInfo.imageLinks.smallThumbnail : '',
-				imageLink: item.volumeInfo.imageLinks ? item.volumeInfo.imageLinks.thumbnail : '',
-			}
-			setBook(outData)
+			setBook(format(item))
 		}
 		fetchData()
 	}, [bookId])
@@ -32,17 +38,7 @@ export const SerchBooks = serchWord => {
 			const url = `https://www.googleapis.com/books/v1/volumes/?q=${serchWord}&maxResults=2&key=${process.env.NEXT_PUBLIC_BOOK_API_KEY}`
 			const result = await axios(url)
 			const items = result.data.items
-			const outData = items.map(item => {
-				return {
-					id: item.id,
-					title: item.volumeInfo.title,
-					authors: item.volumeInfo.authors,
-					description: item.volumeInfo.description,
-					pageCount: item.volumeInfo.pageCount,
-					smallImageLink: item.volumeInfo.imageLinks ? item.volumeInfo.imageLinks.smallThumbnail : '',
-					imageLink: item.volumeInfo.imageLinks ? item.volumeInfo.imageLinks.thumbnail : '',
-				}
-			})
+			const outData = items.map(item => format(item))
 			setBooks(outData)
 		}
 		fetchData()
