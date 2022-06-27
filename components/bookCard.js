@@ -10,7 +10,7 @@ import styles from '../styles/components/bookCard.module.css'
 //   description: string
 //   pageCount: number
 //   smallImageLink: string
-//   ImageLink: string
+//   imageLink: string
 // }
 
 const BookCard = ({ book }) => {
@@ -18,7 +18,7 @@ const BookCard = ({ book }) => {
     <div className={styles.book__card}>
       <div className={styles.book__info}>
         <div className={styles.book__image__area}>
-          <Image src={book.ImageLink} width={120} height={170} alt="book image" className={styles.book__image} />
+          <Image src={book.imageLink} width={120} height={170} alt="book image" className={styles.book__image} />
         </div>
         <div className={styles.book__details}>
           <p>{book.title}</p>
