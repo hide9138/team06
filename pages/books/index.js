@@ -8,7 +8,6 @@ import Link from 'next/link'
 
 const Home = () => {
 	const { currentUser } = useAuth()
-	// const [outputs, setOutputs] = useState([{ book: {}, user: {}, tweet: {} }])
 	const [outputs, setOutputs] = useState([])
 
 	useEffect(() => {
