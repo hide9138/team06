@@ -1,42 +1,62 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
 import styles from '../../styles/books/Home.module.css'
 import { useAuth } from '../../components/AuthContext'
 import OutputCard from '../../components/outputCard'
 import Layout from '../../components/layout'
-import { GetBook } from '../../components/BookApiFetch'
+import { getBook } from '../../components/BookApiFetch'
 import firebase, { db } from '../../firebase/firebase'
 
-const output = {
-	userPhotoUrl: 'https://static.overlay-tech.com/assets/3d3c257d-25ef-46ac-8f50-17b6d4792414.png',
-	userName: '伊藤マイケル',
-	page: 24,
-	word1: '失敗',
-	word2: '貴重な学び',
-	word3: '成功の可能性',
-	bookPhotoUrl: 'https://static.overlay-tech.com/assets/8fcdb0ac-9c3a-436c-883e-6249e0f97503.png',
-	bookTitle: '本のタイトル',
-	bookAuthor: '',
-}
-
-const outputs = new Array(5).fill(output)
-
-const Outputs = () => {
+const Outputs = ({ outputs }) => {
 	return (
-		<div className={styles.contents__container}>
-			{outputs.map((output, i) => (
-				<OutputCard key={i} output={output} />
-			))}
-		</div>
+		<>
+			<div className={styles.contents__container}>
+				{outputs.map((output, i) => (
+					<OutputCard key={i} output={output} />
+				))}
+			</div>
+		</>
 	)
 }
 
 const Home = () => {
-	const { id } = useRouter().query
-	const { currentUser } = useAuth()
-	const item = GetBook('LCIbnwEACAAJ')
 	const router = useRouter()
+	const { id } = router.query
+	const bookRef = db.collection('books').where('id', '==', id)
+	const [outputs, setOutputs] = useState([])
+	const [bookDetail, setBookDetail] = useState([])
+	const updateState = book => setBookDetail(book) // console.log(outputs)
+	const { currentUser } = useAuth()
+
+	useEffect(() => {
+		const getOutputs = async () => {
+			const bookRefs = await bookRef.limit(10).get()
+			const bookList = bookRefs.docs.map(querySnapshot => {
+				return { mainId: querySnapshot.id, ref: querySnapshot.ref, ...querySnapshot.data() }
+			})
+			const bookRefList = bookList.map(book => book.ref)
+
+			const tweetRefs = await db.collection('tweets').orderBy('updateTime', 'desc').get()
+			const tweetDocs = tweetRefs.docs.filter(tweet => bookRefList.some(bookRef => tweet.data().bookRef.isEqual(bookRef)))
+			const tweetList = tweetDocs.map(querySnapshot => querySnapshot.data())
+
+			const userRefs = await db.collection('users').get()
+			const userList = userRefs.docs.map(querySnapshot => {
+				return { mainId: querySnapshot.id, ...querySnapshot.data() }
+			})
+
+			const outputs = tweetList.map(tweet => {
+				const user = userList.filter(user => user.mainId == tweet.userRef.id)[0]
+				const book = bookList.filter(book => book.mainId == tweet.bookRef.id)[0]
+				return { user, tweet, book }
+			})
+
+			setOutputs(outputs)
+		}
+		getBook(id, updateState)
+		getOutputs()
+	}, [])
 
 	if (!currentUser) {
 		return <></>
@@ -45,13 +65,7 @@ const Home = () => {
 	const hondleCreateBook = () => {
 		const userRef = db.collection('users').doc(currentUser.uid)
 		db.collection('books').add({
-			id: item.id,
-			title: item.title,
-			authors: item.authors,
-			description: item.description,
-			pageCount: item.pageCount,
-			smallImageLink: item.smallImageLink,
-			imageLink: item.imageLink,
+			...bookDetail,
 			userRef: userRef,
 			createTime: firebase.firestore.FieldValue.serverTimestamp(),
 		})
@@ -65,26 +79,24 @@ const Home = () => {
 			</div>
 
 			<div className={styles.book__info__container}>
-				<div className={styles.book__info__block}>
-					<div className={styles.book__info__book__image__area}>
-						<Image
-							src="https://static.overlay-tech.com/assets/bd07130e-33fa-4fcc-8f5f-be741bd81efa.png"
-							width="220"
-							height="300"
-							alt="book image"
-							className={styles.book__info__book__image}
-						/>
-					</div>
-					<div className={styles.book__info__basic__info}>
-						<p className={styles.book__info__title}>本タイトル</p>
-						<p className={styles.book__info__author}>著者　うんこまん</p>
-						<p className={styles.book__info__publisher}>Publisher</p>
-						<p className={styles.book__info__publish__date}>PublishDate</p>
-					</div>
-				</div>
-				<div>
-					<p className={styles.book__info__description}>説明(BooksAPIでいうdescription）</p>
-				</div>
+				{bookDetail.id && (
+					<>
+						<div className={styles.book__info__block}>
+							<div className={styles.book__info__book__image__area}>
+								<Image src={bookDetail.imageLink} width="220" height="300" alt="book image" className={styles.book__info__book__image} />
+							</div>
+							<div className={styles.book__info__basic__info}>
+								<p className={styles.book__info__title}>{bookDetail.title}</p>
+								<p className={styles.book__info__author}>著者名：{bookDetail.authors.join(', ')}</p>
+								<p className={styles.book__info__publisher}>出版社: {bookDetail.publisher}</p>
+								<p className={styles.book__info__publisher}>{bookDetail.publishDate}</p>
+							</div>
+						</div>
+						<div>
+							<p className={styles.book__info__description}>{bookDetail.description}</p>
+						</div>
+					</>
+				)}
 				<div className={styles.btn__group}>
 					<button className={styles.btn}>詳細</button>
 					<button className={styles.btn} onClick={() => hondleCreateBook()}>
@@ -95,7 +107,7 @@ const Home = () => {
 			</div>
 
 			{/* みんなのアウトプット */}
-			<Outputs />
+			<Outputs outputs={outputs} />
 		</main>
 	)
 }
