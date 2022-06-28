@@ -16,19 +16,11 @@ const format = item => {
 	}
 }
 
-export const GetBook = bookId => {
-	const [book, setBook] = useState([])
-	useEffect(() => {
-		const fetchData = async () => {
-			const url = 'https://www.googleapis.com/books/v1/volumes/' + bookId
-			const result = await axios(url)
-			const item = result.data
-			setBook(format(item))
-		}
-		fetchData()
-	}, [bookId])
-
-	return book
+export const getBook = async (bookId, updateState) => {
+	const url = 'https://www.googleapis.com/books/v1/volumes/' + bookId
+	const result = await axios(url)
+	const item = result.data
+	updateState(format(item))
 }
 
 export const SerchBooks = serchWord => {
