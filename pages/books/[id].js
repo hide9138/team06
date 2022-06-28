@@ -38,17 +38,17 @@ const Home = () => {
 
 			const userRefs = await db.collection('users').get()
 			const userList = userRefs.docs.map(querySnapshot => {
-				return { id: querySnapshot.id, ...querySnapshot.data() }
+				return { mainId: querySnapshot.id, ...querySnapshot.data() }
 			})
 
 			const bookRefs = await db.collection('books').get()
 			const bookList = bookRefs.docs.map(querySnapshot => {
-				return { ...querySnapshot.data(), id: querySnapshot.id }
+				return { mainId: querySnapshot.id, ...querySnapshot.data() }
 			})
 
 			const outputs = tweetList.map(tweet => {
-				const user = userList.filter(user => user.id == tweet.userRef.id)[0]
-				const book = bookList.filter(book => book.id == tweet.bookRef.id)[0]
+				const user = userList.filter(user => user.mainId == tweet.userRef.id)[0]
+				const book = bookList.filter(book => book.mainId == tweet.bookRef.id)[0]
 				return { user, tweet, book }
 			})
 
@@ -83,7 +83,7 @@ const Home = () => {
 			</div>
 
 			<div className={styles.book__info__container}>
-				{book.id && (
+				{book.mainId && (
 					<div className={styles.book__info__block}>
 						<div className={styles.book__info__book__image__area}>
 							<Image src={book.imageLink} width="220" height="300" alt="book image" className={styles.book__info__book__image} />
