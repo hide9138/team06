@@ -3,7 +3,6 @@ import Image from 'next/image'
 import styles from '../../styles/Homepage.module.css'
 import { useAuth } from '../../components/AuthContext'
 import Layout from '../../components/layout'
-
 import { db } from '../../firebase/firebase'
 import Link from 'next/link'
 
@@ -46,30 +45,40 @@ const Home = () => {
 				{outputs.map((output, i) => (
 					<div key={i} className={styles.content__output}>
 						{/* User */}
-						<div className={styles.user__container}>
-							<div className={styles.user__image__area}>
-								<Image src={output.userPhotoUrl} width={50} height={50} alt="user photo" className={styles.user__image} />
+						{output.user && output.tweet && (
+							<div className={styles.user__container}>
+								<div className={styles.user__image__area}>
+									{output.user && (
+										<Link href={`/users/${output.user.id}`}>
+											<Image src={output.user.photoURL} width={50} height={50} alt="user photo" className={styles.user__image} />
+										</Link>
+									)}
+								</div>
+								<div className={styles.user__info}>
+									<p className={styles.user__name}>{output.user.displayName}</p>
+									<p className={styles.output__words}>
+										<span>P. {output.tweet.pageNumber}</span>
+										<span>{`「${output.tweet.word1}」`}</span>
+										<span>{`「${output.tweet.word2}」`}</span>
+										<span>{`「${output.tweet.word3}」`}</span>
+									</p>
+								</div>
 							</div>
-							<div className={styles.user__info}>
-								<p className={styles.user__name}>{output.userName}</p>
-								<p className={styles.output__words}>
-									<span>P. {output.page}</span>
-									{output.threeWords.map(word => (
-										<span key={`${i}-${word}`}>{`「${word}」`}</span>
-									))}
-								</p>
-							</div>
-						</div>
+						)}
 						{/* Book */}
-						<div className={styles.book__container}>
-							<div className={styles.book__image__area}>
-								<Image src={output.bookPhotoUrl} width={72} height={100} alt="user photo" className={styles.book__image} />
+						{output.book && (
+							<div className={styles.book__container}>
+								<div className={styles.book__image__area}>
+									<Link href={`/books/${output.book.id}`}>
+										<Image src={output.book.imageLink} width={72} height={100} alt="user photo" className={styles.book__image} />
+									</Link>
+								</div>
+								<div className={styles.book__info}>
+									<p>{output.book.title}</p>
+									<p>著者名：{output.book.authors.join(', ')}</p>
+								</div>
 							</div>
-							<div className={styles.book__info}>
-								<p>{output.bookTitle}</p>
-								<p>著者名：{output.bookAuthor}</p>
-							</div>
-						</div>
+						)}
 						{/* Button */}
 						<div className={styles.btn__container}>
 							<div className={styles.btn}>

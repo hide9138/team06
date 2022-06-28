@@ -5,7 +5,7 @@ import styles from '../../styles/books/Home.module.css'
 import { useAuth } from '../../components/AuthContext'
 import OutputCard from '../../components/outputCard'
 import Layout from '../../components/layout'
-import { GetBook } from '../../components/BookApiFetch'
+import { getBook } from '../../components/BookApiFetch'
 import firebase, { db } from '../../firebase/firebase'
 
 const Outputs = ({ outputs }) => {
@@ -23,26 +23,26 @@ const Outputs = ({ outputs }) => {
 const Home = () => {
 	const router = useRouter()
 	const { id } = router.query
-	const bookRef = db.collection('books').doc(id)
+	const bookRef = db.collection('books').where('id', '==', id)
 	const [outputs, setOutputs] = useState([])
-	const [book, setBook] = useState([])
-	const item = GetBook('LCIbnwEACAAJ')
-	console.log(item)
-
+	const [bookDetail, setBookDetail] = useState([])
+	const updateState = book => setBookDetail(book) // console.log(outputs)
 	const { currentUser } = useAuth()
 
 	useEffect(() => {
 		const getOutputs = async () => {
-			const tweetRefs = await db.collection('tweets').where('bookRef', '==', bookRef).orderBy('updateTime', 'desc').get()
-			const tweetList = tweetRefs.docs.map(querySnapshot => querySnapshot.data())
+			const bookRefs = await bookRef.limit(10).get()
+			const bookList = bookRefs.docs.map(querySnapshot => {
+				return { mainId: querySnapshot.id, ref: querySnapshot.ref, ...querySnapshot.data() }
+			})
+			const bookRefList = bookList.map(book => book.ref)
+
+			const tweetRefs = await db.collection('tweets').orderBy('updateTime', 'desc').get()
+			const tweetDocs = tweetRefs.docs.filter(tweet => bookRefList.some(bookRef => tweet.data().bookRef.isEqual(bookRef)))
+			const tweetList = tweetDocs.map(querySnapshot => querySnapshot.data())
 
 			const userRefs = await db.collection('users').get()
 			const userList = userRefs.docs.map(querySnapshot => {
-				return { mainId: querySnapshot.id, ...querySnapshot.data() }
-			})
-
-			const bookRefs = await db.collection('books').get()
-			const bookList = bookRefs.docs.map(querySnapshot => {
 				return { mainId: querySnapshot.id, ...querySnapshot.data() }
 			})
 
@@ -54,13 +54,9 @@ const Home = () => {
 
 			setOutputs(outputs)
 		}
-		const getBook = async () => {
-			const bookDoc = await bookRef.get()
-			setBook(bookDoc.data())
-		}
-		getBook()
+		getBook(id, updateState)
 		getOutputs()
-	}, [bookRef])
+	}, [])
 
 	if (!currentUser) {
 		return <></>
@@ -69,7 +65,7 @@ const Home = () => {
 	const hondleCreateBook = () => {
 		const userRef = db.collection('users').doc(currentUser.uid)
 		db.collection('books').add({
-			...item,
+			...bookDetail,
 			userRef: userRef,
 			createTime: firebase.firestore.FieldValue.serverTimestamp(),
 		})
@@ -83,22 +79,24 @@ const Home = () => {
 			</div>
 
 			<div className={styles.book__info__container}>
-				{book.mainId && (
-					<div className={styles.book__info__block}>
-						<div className={styles.book__info__book__image__area}>
-							<Image src={book.imageLink} width="220" height="300" alt="book image" className={styles.book__info__book__image} />
+				{bookDetail.id && (
+					<>
+						<div className={styles.book__info__block}>
+							<div className={styles.book__info__book__image__area}>
+								<Image src={bookDetail.imageLink} width="220" height="300" alt="book image" className={styles.book__info__book__image} />
+							</div>
+							<div className={styles.book__info__basic__info}>
+								<p className={styles.book__info__title}>{bookDetail.title}</p>
+								<p className={styles.book__info__author}>著者名：{bookDetail.authors.join(', ')}</p>
+								<p className={styles.book__info__publisher}>出版社: {bookDetail.publisher}</p>
+								<p className={styles.book__info__publisher}>{bookDetail.publishDate}</p>
+							</div>
 						</div>
-						<div className={styles.book__info__basic__info}>
-							<p className={styles.book__info__title}>{book.title}</p>
-							<p className={styles.book__info__author}>著者名：{book.authors.join(', ')}</p>
-							<p className={styles.book__info__publisher}>出版社: {book.publisher}</p>
-							<p className={styles.book__info__publisher}>{book.publishDate}</p>
+						<div>
+							<p className={styles.book__info__description}>{bookDetail.description}</p>
 						</div>
-					</div>
+					</>
 				)}
-				<div>
-					<p className={styles.book__info__description}>{book.description}</p>
-				</div>
 				<div className={styles.btn__group}>
 					<button className={styles.btn}>詳細</button>
 					<button className={styles.btn} onClick={() => hondleCreateBook()}>
