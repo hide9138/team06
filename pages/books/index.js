@@ -27,7 +27,6 @@ const Home = () => {
 				const book = bookList.filter(book => book.mainId == tweet.bookRef.id)[0]
 				return { user, tweet, book }
 			})
-
 			setOutputs(outputs)
 		}
 		getOutputs()

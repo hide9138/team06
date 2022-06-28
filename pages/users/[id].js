@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react'
-import { useRouter } from 'next/router'
+
+import React, { useState, useEffect } from 'react'
 import BookShelf from '../../components/bookShelf'
 import Image from 'next/image'
 import styles from '../../styles/users/Home.module.css'
@@ -7,11 +7,8 @@ import { useUser } from '../../components/UserContext'
 import OutputCard from '../../components/outputCard'
 import Layout from '../../components/layout'
 import EditProfileModal from '../../components/editProfileModal'
-import firebase, { db } from '../../firebase/firebase'
+import { db } from '../../firebase/firebase'
 import { useAuth } from '../../components/AuthContext'
-
-const outputsContext = React.createContext()
-export const booksContext = React.createContext()
 
 const UserProfile = () => {
 	const { id, displayName, selfIntroduction, photoURL } = useUser()
@@ -68,20 +65,19 @@ const Home = () => {
 			const tweetList = tweetRefs.docs.map(querySnapshot => querySnapshot.data())
 			const userRefs = await db.collection('users').get()
 			const userList = userRefs.docs.map(querySnapshot => {
-				return { id: querySnapshot.id, ...querySnapshot.data() }
+				return { mainId: querySnapshot.id, ...querySnapshot.data() }
 			})
 			const bookRefs = await db.collection('books').get()
 			const bookList = bookRefs.docs.map(querySnapshot => {
-				return { ...querySnapshot.data(), id: querySnapshot.id }
+				return { mainId: querySnapshot.id, ...querySnapshot.data() }
 			})
 			const outputs = tweetList.map(tweet => {
-				const user = userList.filter(user => user.id == tweet.userRef.id)[0]
-				const book = bookList.filter(book => book.id == tweet.bookRef.id)[0]
+				const user = userList.filter(user => user.mainId == tweet.userRef.id)[0]
+				const book = bookList.filter(book => book.mainId == tweet.bookRef.id)[0]
 				return { user, tweet, book }
 			})
 
 			const a = bookList.filter(book => String(book.userRef.id) === String(userRef.id))
-			console.log(a)
 			setBooks(a)
 			setOutputs(outputs)
 		}
