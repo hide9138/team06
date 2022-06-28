@@ -10,13 +10,12 @@ const Home = () => {
 	const { currentUser } = useAuth()
 	const [outputs, setOutputs] = useState([])
 
-  /*const LikeButton = (bookRef) => {
+  const LikeButton = (bookRef) => {
     const [count, setCount] = useState()
     const { currentUser } = useAuth()
     const userRef = db.collection('users').doc(currentUser.uid)
     db.collection('likes')
-      .where('userRef', '==', userRef)
-      .where('bookRef', '==', bookRef)
+      .where('bookRef', '==', bookRef.bookRef)
       .get()
       .then(querySnapshot => {
         const size = querySnapshot.size
@@ -25,11 +24,10 @@ const Home = () => {
     const handleClick = () => {
       db.collection('likes').add({
         userRef: userRef,
-        bookRef: bookRef
+        bookRef: bookRef.bookRef,
       })
       db.collection('likes')
-        .where('userRef', '==', userRef)
-        .where('bookRef', '==', bookRef)
+        .where('bookRef', '==', bookRef.bookRef)
         .get()
         .then(querySnapshot => {
           const size = querySnapshot.size
@@ -37,7 +35,7 @@ const Home = () => {
         })
     }
     return <span className={styles.btn} onClick={handleClick}>♥ {count}</span>
-  }*/
+  }
 
 	useEffect(() => {
 		const getOutputs = async () => {
@@ -110,7 +108,7 @@ const Home = () => {
 						)}
 						{/* Button */}
 						<div className={styles.btn__container}>
-              <LikeButton bookRef={`/users/${output.user.id}`} />
+              <LikeButton bookRef={output.tweet.bookRef} />
 						</div>
 					</div>
 				))}
