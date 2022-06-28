@@ -31,7 +31,7 @@ const Home = () => {
 			setOutputs(outputs)
 		}
 		getOutputs()
-	})
+	}, [])
 
 	if (!currentUser) {
 		return <></>
