@@ -59,11 +59,7 @@ export default function Home() {
 						type="text"
 						className={styles.rectangle22}
 						value={tweet.pageNumber || ''}
-						onChange={e => {
-							setTweet(prevState => {
-								return { ...prevState, pageNumber: e.target.value }
-							})
-						}}
+						onChange={e => setTweet({ ...tweet, pageNumber: e.target.value })}
 					/>
 				</div>
 			</div>
@@ -74,31 +70,19 @@ export default function Home() {
 						type="text"
 						className={styles.rectangle19}
 						value={tweet.word1 || ''}
-						onChange={e => {
-							setTweet(prevState => {
-								return { ...prevState, word1: e.target.value }
-							})
-						}}
+						onChange={e => setTweet({ ...tweet, word1: e.target.value })}
 					/>
 					<input
 						type="text"
 						className={styles.rectangle19}
 						value={tweet.word2 || ''}
-						onChange={e => {
-							setTweet(prevState => {
-								return { ...prevState, word2: e.target.value }
-							})
-						}}
+						onChange={e => setTweet({ ...tweet, word2: e.target.value })}
 					/>
 					<input
 						type="text"
 						className={styles.rectangle19}
 						value={tweet.word3 || ''}
-						onChange={e => {
-							setTweet(prevState => {
-								return { ...prevState, word3: e.target.value }
-							})
-						}}
+						onChange={e => setTweet({ ...tweet, word3: e.target.value })}
 					/>
 				</div>
 			</div>
