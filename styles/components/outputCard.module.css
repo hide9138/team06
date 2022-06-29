@@ -89,3 +89,19 @@
 .count {
 	margin-left: 1rem;
 }
+.button__container {
+	margin: 0 0 auto auto;
+}
+.tweet__button {
+	display: block;
+	border-width: thin;
+	background-color: #fff;
+	border-radius: 100vh;
+	width: 80px;
+	height: 30px;
+	margin-bottom: 10px;
+}
+.tweet__button:hover {
+	color: #fff;
+	background: gray;
+}

@@ -1,14 +1,37 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
 import styles from '../styles/components/outputCard.module.css'
 import Link from 'next/link'
 import LikeButton from './likeButton'
+import { useRouter } from 'next/router'
+import { db } from '../firebase/firebase'
+import { useAuth } from './AuthContext'
 
-const OutputCard = ({ output }) => {
+const OutputCard = ({ output, setIsDelete }) => {
+	const { currentUser } = useAuth()
+	const router = useRouter()
+	const hondleEditTweetButton = () => {
+		router.push(`/books/edit/${output.tweet.mainId}`)
+	}
+	const hondleDeleteTweetButton = async () => {
+		await deleteTweet()
+		router.push(`/users/mypage?tab=1`)
+		setIsDelete(flag => !flag)
+	}
+	const deleteTweet = async () => {
+		console.log(output.tweet.mainId)
+		const tweetRef = db.collection('tweets').doc(output.tweet.mainId)
+		const tweetDoc = await tweetRef.get()
+		const query = await db.collection('likes').where('tweetRef', '==', tweetDoc.ref).get()
+		query.docs.forEach(async doc => {
+			await doc.ref.delete()
+		})
+		tweetRef.delete()
+	}
+
 	return (
 		<div className={styles.content__output}>
 			{/* User */}
-
 			<div className={styles.user__container}>
 				<Link href={`/users/${output.user.mainId}`}>
 					<div className={styles.user__image__area}>
@@ -24,6 +47,16 @@ const OutputCard = ({ output }) => {
 						<span>{`「${output.tweet.word3}」`}</span>
 					</p>
 				</div>
+				{output.tweet.userRef.id == currentUser.uid && (
+					<div className={styles.button__container}>
+						<button className={styles.tweet__button} onClick={hondleEditTweetButton}>
+							編集
+						</button>
+						<button className={styles.tweet__button} onClick={hondleDeleteTweetButton}>
+							削除
+						</button>
+					</div>
+				)}
 			</div>
 
 			{/* Book */}
