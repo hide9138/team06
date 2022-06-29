@@ -83,6 +83,7 @@ const Home = () => {
 			setOutputs(outputs)
 		}
 		if (currentUser) getOutputs()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	return (

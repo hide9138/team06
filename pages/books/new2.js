@@ -14,6 +14,7 @@ export default function Home() {
 
 	useEffect(() => {
 		bookRef.get().then(doc => setBook(doc.data()))
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	const router = useRouter()

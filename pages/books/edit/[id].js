@@ -23,6 +23,7 @@ export default function Home() {
 			setBook(bookSnapshot.data())
 		}
 		getTweetBook()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	const hondleCreateBook = () => {
