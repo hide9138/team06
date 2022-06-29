@@ -51,7 +51,7 @@ const Home = () => {
 						{output.user && output.tweet && (
 							<div className={styles.user__container}>
 								{output.user && (
-									<Link href={`/users/${output.user.id}`}>
+									<Link href={`/users/${output.user.mainId}`}>
 										<div className={styles.user__image__area}>
 											<Image src={output.user.photoURL} width={50} height={50} alt="user photo" className={styles.user__image} />
 										</div>

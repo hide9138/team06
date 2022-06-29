@@ -41,7 +41,7 @@ const BookShelf = () => {
 		<div className={styles.BookShelf}>
 			<div className={styles.bookShelfContainer}>
 				{books.map((book, i) => (
-					<div key={book.data.id} className={`${styles.bookShelfImage} ${i % 3 === 0 && styles.firstRowImage}`}>
+					<div key={book.id} className={`${styles.bookShelfImage} ${i % 3 === 0 && styles.firstRowImage}`}>
 						<Link href={{ pathname: `/books/new2`, query: { book_id: book.id } }}>
 							<Image className={styles.bookImage} src={book.data.imageLink} width="135" height="182" alt="book photo" />
 						</Link>

@@ -32,7 +32,7 @@ const BookSearchbar = memo(() => {
 		const getResults = async () => {
 			const bookRefs = await db.collection('books').get()
 			const bookList = bookRefs.docs.map(querySnapshot => {
-				return { ...querySnapshot.data(), id: querySnapshot.id }
+				return { mainId: querySnapshot.id, ...querySnapshot.data() }
 			})
 			const tweetRefs = await db.collection('tweets').get()
 			let counts = new Map()
@@ -50,7 +50,7 @@ const BookSearchbar = memo(() => {
 			}
 
 			const results = Array.from(counts).map(([key, _]) => {
-				const book = bookList.filter(book => book.id == key)[0]
+				const book = bookList.filter(book => book.mainId == key)[0]
 				return book
 			})
 
@@ -79,7 +79,7 @@ const BookSearchbar = memo(() => {
 			{results.map(
 				(result, i) =>
 					result && (
-						<div className={`${results.length - 1 === i && styles.content__result__last}`} key={result.id}>
+						<div className={`${results.length - 1 === i && styles.content__result__last}`} key={result.mainId}>
 							<Link href={`/books/${result.id}`}>
 								<a>
 									<BookCard key={i} book={result} />
