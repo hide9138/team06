@@ -35,7 +35,7 @@ export default function Home() {
 			createTime: firebase.firestore.FieldValue.serverTimestamp(),
 			updateTime: firebase.firestore.FieldValue.serverTimestamp(),
 		})
-		router.push('../books/')
+		router.push(`/users/${currentUser.uid}?tab=1`)
 	}
 
 	return (

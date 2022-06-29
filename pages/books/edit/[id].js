@@ -1,64 +1,131 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter } from 'next/router'
-import styles from '../../../styles/books/Edit.module.css'
+import firebase, { db } from '../../../firebase/firebase'
+import { useAuth } from '../../../components/AuthContext'
+import styles from '../../../styles/books/New2.module.css'
 
 export default function Home() {
+	const router = useRouter()
+	const [book, setBook] = useState([])
+	const [tweet, setTweet] = useState([])
+	const tweetId = useRouter().query.id
+	const tweetRef = db.collection('tweets').doc(tweetId)
+	const { currentUser } = useAuth()
+
+	useEffect(() => {
+		const getTweetBook = async () => {
+			const tweetSnapshot = await tweetRef.get()
+			const bookRef = tweetSnapshot.data().bookRef
+			const bookSnapshot = await bookRef.get()
+			setTweet(tweetSnapshot.data())
+			setBook(bookSnapshot.data())
+		}
+		getTweetBook()
+	}, [])
+
+	const hondleCreateBook = () => {
+		db.collection('tweets')
+			.doc(tweetId)
+			.update({
+				pageNumber: Number(tweet.pageNumber),
+				word1: tweet.word1,
+				word2: tweet.word2,
+				word3: tweet.word3,
+				updateTime: firebase.firestore.FieldValue.serverTimestamp(),
+			})
+		router.push(`/users/${currentUser.uid}?tab=1`)
+	}
+
+	if (!currentUser) {
+		return <></>
+	}
+
 	return (
 		<div className={styles.container}>
-			{/* <img alt="" className={styles.line6} src="https://static.overlay-tech.com/assets/c41434ff-d656-4993-b856-51469eb48e95.png" />
-			<img alt="" className={styles.line7} src="https://static.overlay-tech.com/assets/31e15f00-83d9-4ded-9c38-708594b53145.png" /> */}
+			<div className="batsu"></div>
 			<div className={styles.row}>
 				<p className={styles.num3}>3ワードアウトプット</p>
 			</div>
 			<div className={styles.row}>
-				<BookCard />
+				<BookCard props={{ book }} />
 			</div>
 
 			<div className={styles.row}>
 				<div className={styles.flexWrapperTwo}>
 					<div className={styles.p}>p.</div>
-					<div className={styles.rectangle22} />
+					<input
+						type="text"
+						className={styles.rectangle22}
+						value={tweet.pageNumber || ''}
+						onChange={e => {
+							setTweet(prevState => {
+								return { ...prevState, pageNumber: e.target.value }
+							})
+						}}
+					/>
 				</div>
 			</div>
 
 			<div className={styles.row}>
-				<KeywordForm />
+				<div className={styles.flexWrapperThree}>
+					<input
+						type="text"
+						className={styles.rectangle19}
+						value={tweet.word1 || ''}
+						onChange={e => {
+							setTweet(prevState => {
+								return { ...prevState, word1: e.target.value }
+							})
+						}}
+					/>
+					<input
+						type="text"
+						className={styles.rectangle19}
+						value={tweet.word2 || ''}
+						onChange={e => {
+							setTweet(prevState => {
+								return { ...prevState, word2: e.target.value }
+							})
+						}}
+					/>
+					<input
+						type="text"
+						className={styles.rectangle19}
+						value={tweet.word3 || ''}
+						onChange={e => {
+							setTweet(prevState => {
+								return { ...prevState, word3: e.target.value }
+							})
+						}}
+					/>
+				</div>
 			</div>
 			<div className={styles.row}>
-				<div className={styles.group36}>
-					<p className={styles.text}>アウトプット</p>
-				</div>
+				<button className={styles.group36}>
+					<p className={styles.text} onClick={() => hondleCreateBook()}>
+						アウトプット
+					</p>
+				</button>
 			</div>
 		</div>
 	)
 }
 
-const BookCard = () => {
+const BookCard = ({ props }) => {
+	const book = props.book || props.book
 	return (
 		<div className={styles.bookCard}>
 			<div className={styles.flexWrapperFour}>
-				<img
-					alt=""
-					className={styles.num2022061316151}
-					src="https://static.overlay-tech.com/assets/67e8a8e7-67fb-42de-83f4-ede6506fb8f8.png"
-				/>
+				{book.imageLink && <Image className={styles.num2022061316151} src={book.imageLink} width="159" height="229" alt="book" />}
+
 				<div className={styles.flexWrapperFive}>
-					<p className={styles.title}>本タイトル</p>
-					<p className={styles.author}>著者 うんこまん</p>
+					<p className={styles.title}>{book.title}</p>
+					<p className={styles.author}>{book.authors}</p>
 				</div>
 			</div>
-			<p className={styles.booksapidescription}>説明(BooksAPIでいうdescription）</p>
-		</div>
-	)
-}
-
-const KeywordForm = () => {
-	return (
-		<div className={styles.flexWrapperThree}>
-			<div className={styles.rectangle19} />
-			<div className={styles.rectangle19} />
-			<div className={styles.rectangle19} />
+			<p className={styles.booksapidescription}>{book.description}</p>
 		</div>
 	)
 }
