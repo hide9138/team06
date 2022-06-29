@@ -8,6 +8,7 @@ import Layout from '../../components/layout'
 import EditProfileModal from '../../components/editProfileModal'
 import { db } from '../../firebase/firebase'
 import { useAuth } from '../../components/AuthContext'
+import { useRouter } from 'next/router'
 
 const UserProfile = () => {
 	const { id, displayName, selfIntroduction, photoURL } = useUser()
@@ -52,7 +53,8 @@ const Outputs = ({ outputs }) => {
 }
 
 const Home = () => {
-	const [tabIndex, setTabIndex] = useState(0)
+	const tabId = Number(useRouter().query.tab)
+	const [tabIndex, setTabIndex] = useState(tabId || 0)
 	const [outputs, setOutputs] = useState([])
 	const [books, setBooks] = useState([])
 	const { currentUser } = useAuth()
@@ -76,12 +78,13 @@ const Home = () => {
 				return { user, tweet, book }
 			})
 
-			const a = bookList.filter(book => String(book.userRef.id) === String(userRef.id))
-			setBooks(a)
+			const booksData = bookList.filter(book => String(book.userRef.id) === String(userRef.id))
+			setBooks(booksData)
 			setOutputs(outputs)
 		}
-		getOutputs()
-	}, [currentUser.uid])
+		if (currentUser) getOutputs()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
 	return (
 		<main className={styles.main}>
@@ -97,9 +100,9 @@ const Home = () => {
 			</div>
 
 			{/* Tab contents */}
-			{tabIndex == 0 && <BookShelf books={books} />}
-			{tabIndex == 1 && <Outputs outputs={outputs} />}
-			{tabIndex == 2 && <Outputs outputs={outputs} />}
+			{tabIndex === 0 && <BookShelf books={books} />}
+			{tabIndex === 1 && <Outputs outputs={outputs} />}
+			{tabIndex === 2 && <Outputs outputs={outputs} />}
 		</main>
 	)
 }
