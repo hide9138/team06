@@ -6,16 +6,35 @@ import Layout from '../../components/layout'
 import { db } from '../../firebase/firebase'
 import Link from 'next/link'
 import LikeButton from '../../components/likeButton'
+import { useRouter } from 'next/router'
 
 const Home = () => {
 	const { currentUser } = useAuth()
+	const router = useRouter()
 	const [outputs, setOutputs] = useState([])
+	const [isDelete, setIsDelete] = useState(false)
+	const hondleEditTweetButton = output => {
+		router.push(`/books/edit/${output.tweet.mainId}`)
+	}
+	const hondleDeleteTweetButton = async output => {
+		await deleteTweet(output)
+		setIsDelete(flag => !flag)
+	}
+	const deleteTweet = async output => {
+		const tweetRef = db.collection('tweets').doc(output.tweet.mainId)
+		const tweetDoc = await tweetRef.get()
+		const query = await db.collection('likes').where('tweetRef', '==', tweetDoc.ref).get()
+		query.docs.forEach(async doc => {
+			await doc.ref.delete()
+		})
+		tweetRef.delete()
+	}
 
 	useEffect(() => {
 		const getOutputs = async () => {
 			const tweetRefs = await db.collection('tweets').orderBy('updateTime', 'desc').get()
 			const tweetList = tweetRefs.docs.map(querySnapshot => {
-				return { ref: querySnapshot.ref, ...querySnapshot.data() }
+				return { mainId: querySnapshot.id, ref: querySnapshot.ref, ...querySnapshot.data() }
 			})
 			const userRefs = await db.collection('users').get()
 			const userList = userRefs.docs.map(querySnapshot => {
@@ -33,7 +52,7 @@ const Home = () => {
 			setOutputs(outputs)
 		}
 		getOutputs()
-	}, [])
+	}, [isDelete])
 
 	if (!currentUser) {
 		return <></>
@@ -66,6 +85,16 @@ const Home = () => {
 										<span>{`「${output.tweet.word3}」`}</span>
 									</p>
 								</div>
+								{output.tweet.userRef.id == currentUser.uid && (
+									<div className={styles.button__container}>
+										<button className={styles.tweet__button} onClick={() => hondleEditTweetButton(output)}>
+											編集
+										</button>
+										<button className={styles.tweet__button} onClick={() => hondleDeleteTweetButton(output)}>
+											削除
+										</button>
+									</div>
+								)}
 							</div>
 						)}
 						{/* Book */}

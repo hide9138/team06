@@ -37,21 +37,21 @@ const UserProfile = ({ user }) => {
 	)
 }
 
-const Outputs = ({ outputs }) => {
+const Outputs = ({ outputs, setIsDelete }) => {
 	return (
 		<div className={styles.contents__container}>
 			{outputs.map((output, i) => (
-				<OutputCard key={i} output={output} />
+				<OutputCard key={i} output={output} setIsDelete={setIsDelete} />
 			))}
 		</div>
 	)
 }
 
-const Likes = ({ likes }) => {
+const Likes = ({ likes, setIsDelete }) => {
 	return (
 		<div className={styles.contents__container}>
 			{likes.map((output, i) => (
-				<OutputCard key={i} output={output} />
+				<OutputCard key={i} output={output} setIsDelete={setIsDelete} />
 			))}
 		</div>
 	)
@@ -68,6 +68,7 @@ const Home = () => {
 	const [books, setBooks] = useState([])
 	const [likes, setLikes] = useState([])
 	const [user, setUser] = useState([])
+	const [isDelete, setIsDelete] = useState(false)
 
 	const userRef = db.collection('users').doc(userId)
 
@@ -75,7 +76,7 @@ const Home = () => {
 		const getOutputs = async () => {
 			const tweetRefs = await db.collection('tweets').where('userRef', '==', userRef).orderBy('updateTime', 'desc').get()
 			const tweetList = tweetRefs.docs.map(querySnapshot => {
-				return { ref: querySnapshot.ref, ...querySnapshot.data() }
+				return { mainId: querySnapshot.id, ref: querySnapshot.ref, ...querySnapshot.data() }
 			})
 			const userRefs = await db.collection('users').get()
 			const userList = userRefs.docs.map(querySnapshot => {
@@ -121,7 +122,7 @@ const Home = () => {
 			getUser()
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
+	}, [isDelete])
 
 	return (
 		<main className={styles.main}>
@@ -138,8 +139,8 @@ const Home = () => {
 
 			{/* Tab contents */}
 			{tabIndex === 0 && <BookShelf books={books} />}
-			{tabIndex === 1 && <Outputs outputs={outputs} />}
-			{tabIndex === 2 && <Likes likes={likes} />}
+			{tabIndex === 1 && <Outputs outputs={outputs} setIsDelete={setIsDelete} />}
+			{tabIndex === 2 && <Likes likes={likes} setIsDelete={setIsDelete} />}
 		</main>
 	)
 }
