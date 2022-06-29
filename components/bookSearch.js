@@ -7,8 +7,6 @@ import firebase, { db } from '../firebase/firebase'
 import axios from 'axios'
 
 const BookSearchbar = memo(() => {
-	// 入力値のデータ
-	const [searchWord, setSearchWord] = useState('')
 	// デフォルトデータと検索語のデータ用
 	const [results, setResults] = useState([])
 
@@ -27,7 +25,7 @@ const BookSearchbar = memo(() => {
 				imageLink: info.imageLinks ? info.imageLinks.thumbnail : '',
 			}
 		}
-		const url = `https://www.googleapis.com/books/v1/volumes/?q=${searchWord}&maxResults=20&key=${process.env.NEXT_PUBLIC_BOOK_API_KEY}`
+		const url = `https://www.googleapis.com/books/v1/volumes/?q=${searchWord}&maxResults=6&key=${process.env.NEXT_PUBLIC_BOOK_API_KEY}`
 		const result = await axios(url)
 		const items = result.data.items
 		const outData = items.map(item => format(item))
@@ -84,7 +82,11 @@ const BookSearchbar = memo(() => {
 					className={styles.search__input}
 					type="text"
 					placeholder="本のタイトル、著者名"
-					onKeyPress={e => handleSearch(e.target.value)}
+					onKeyPress={e => {
+						if (e.key == 'Enter') {
+							handleSearch(e.target.value)
+						}
+					}}
 				/>
 			</div>
 			<div>

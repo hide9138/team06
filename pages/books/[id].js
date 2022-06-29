@@ -29,10 +29,6 @@ const Home = () => {
 	const updateState = book => setBookDetail(book) // console.log(outputs)
 	const { currentUser } = useAuth()
 
-	bookDetail.description = bookDetail.description.replace(/(<([^>]+)>)/gi, '')
-	bookDetail.publishedDate = bookDetail.publishedDate.replace('-', '/')
-	if (bookDetail.description.length > 500) bookDetail.description = bookDetail.description.substr(0, 500) + '...'
-
 	useEffect(() => {
 		const getOutputs = async () => {
 			const bookRefs = await bookRef.limit(10).get()
@@ -62,6 +58,7 @@ const Home = () => {
 		}
 		getBook(id, updateState)
 		getOutputs()
+		console.log('effect')
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [id])
 
@@ -94,7 +91,11 @@ const Home = () => {
 							</div>
 							<div className={styles.book__info__basic__info}>
 								<p className={styles.book__info__title}>{bookDetail.title}</p>
-								<p className={styles.book__info__author}>著者名：{bookDetail.authors.join(', ')}</p>
+								<p className={styles.book__info__author}>
+									著者名：
+									{bookDetail.authors && <>{bookDetail.authors.join(', ')}</>}
+								</p>
+
 								<p className={styles.book__info__publisher}>
 									{bookDetail.publishedDate}　出版社: {bookDetail.publisher}
 								</p>
