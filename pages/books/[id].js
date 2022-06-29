@@ -29,6 +29,10 @@ const Home = () => {
 	const updateState = book => setBookDetail(book) // console.log(outputs)
 	const { currentUser } = useAuth()
 
+	bookDetail.description = bookDetail.description.replace(/(<([^>]+)>)/gi, '')
+	bookDetail.publishedDate = bookDetail.publishedDate.replace('-', '/')
+	if (bookDetail.description.length > 500) bookDetail.description = bookDetail.description.substr(0, 500) + '...'
+
 	useEffect(() => {
 		const getOutputs = async () => {
 			const bookRefs = await bookRef.limit(10).get()
@@ -59,7 +63,7 @@ const Home = () => {
 		getBook(id, updateState)
 		getOutputs()
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
+	}, [id])
 
 	if (!currentUser) {
 		return <></>
@@ -86,18 +90,17 @@ const Home = () => {
 					<>
 						<div className={styles.book__info__block}>
 							<div className={styles.book__info__book__image__area}>
-								{bookDetail.imageLink && <Image src={bookDetail.imageLink} width="220" height="300" alt="book image" className={styles.book__info__book__image} />}
+								<Image src={bookDetail.imageLink} width="220" height="300" alt="book image" className={styles.book__info__book__image} />
 							</div>
 							<div className={styles.book__info__basic__info}>
 								<p className={styles.book__info__title}>{bookDetail.title}</p>
-								{bookDetail.authors && <p className={styles.book__info__author}>著者名：{bookDetail.authors.join(', ')}</p>}
-								{bookDetail.publisher && <p className={styles.book__info__publisher}>出版社: {bookDetail.publisher}</p>}
-								{bookDetail.publishDate && <p className={styles.book__info__publisher}>{bookDetail.publishDate}</p>}
+								<p className={styles.book__info__author}>著者名：{bookDetail.authors.join(', ')}</p>
+								<p className={styles.book__info__publisher}>
+									{bookDetail.publishedDate}　出版社: {bookDetail.publisher}
+								</p>
 							</div>
 						</div>
-						<div>
-							{bookDetail.description && <p className={styles.book__info__description}>{bookDetail.description}</p>}
-						</div>
+						<div>{bookDetail.description && <p className={styles.book__info__description}>{bookDetail.description}</p>}</div>
 					</>
 				)}
 				<div className={styles.btn__group}>
