@@ -76,12 +76,12 @@ const Home = () => {
 				return { user, tweet, book }
 			})
 
-			const a = bookList.filter(book => String(book.userRef.id) === String(userRef.id))
-			setBooks(a)
+			const booksData = bookList.filter(book => String(book.userRef.id) === String(userRef.id))
+			setBooks(booksData)
 			setOutputs(outputs)
 		}
-		getOutputs()
-	}, [currentUser.uid])
+		if (currentUser) getOutputs()
+	}, [])
 
 	return (
 		<main className={styles.main}>

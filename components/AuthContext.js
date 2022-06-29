@@ -13,28 +13,20 @@ const AuthProvider = ({ children }) => {
 
 	const login = () => {
 		const provider = new firebase.auth.GoogleAuthProvider()
-
 		return auth.signInWithRedirect(provider)
-		// .signInWithPopup(provider)
 	}
 	const createUser = () => {
-		return auth
-			.getRedirectResult()
-			.then(result => {
-				const user = result.user
-				const userRef = db.collection('users').doc(user.uid)
-				console.log(user)
-				userRef.set({
-					displayName: user.displayName,
-					email: user.email,
-					photoURL: user.photoURL,
-					createTime: firebase.firestore.FieldValue.serverTimestamp(),
-					updateTime: firebase.firestore.FieldValue.serverTimestamp(),
-				})
+		return auth.getRedirectResult().then(result => {
+			const user = result.user
+			const userRef = db.collection('users').doc(user.uid)
+			userRef.set({
+				displayName: user.displayName,
+				email: user.email,
+				photoURL: user.photoURL,
+				createTime: firebase.firestore.FieldValue.serverTimestamp(),
+				updateTime: firebase.firestore.FieldValue.serverTimestamp(),
 			})
-			.catch(error => {
-				console.log(error)
-			})
+		})
 	}
 
 	const logout = () => {
