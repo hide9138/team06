@@ -7,35 +7,33 @@ import { useAuth } from '../../components/AuthContext'
 import styles from '../../styles/books/New2.module.css'
 
 export default function Home() {
-	const [pageNumber, setPageNumber] = useState('')
-	const [word1, setWord1] = useState('')
-	const [word2, setWord2] = useState('')
-	const [word3, setWord3] = useState('')
+	const [tweet, setTweet] = useState({ pageNumber: '', word1: '', word2: '', word3: '' })
 	const [book, setBook] = useState([])
 	const bookId = useRouter().query.book_id
 	const bookRef = db.collection('books').doc(bookId)
 
 	useEffect(() => {
 		bookRef.get().then(doc => setBook(doc.data()))
-	}, [bookRef])
+	}, [])
 
 	const router = useRouter()
 	const { currentUser } = useAuth()
 
-	const hondleCreateBook = props => {
-		const tweet = props.tweet
-		const userRef = db.collection('users').doc(currentUser.uid)
-		db.collection('tweets').add({
-			pageNumber: Number(tweet.pageNumber),
-			word1: tweet.word1,
-			word2: tweet.word2,
-			word3: tweet.word3,
-			bookRef: bookRef,
-			userRef: userRef,
-			createTime: firebase.firestore.FieldValue.serverTimestamp(),
-			updateTime: firebase.firestore.FieldValue.serverTimestamp(),
-		})
-		router.push(`/users/${currentUser.uid}?tab=1`)
+	const hondleCreateBook = () => {
+		if (Object.values(tweet).every(v => v)) {
+			const userRef = db.collection('users').doc(currentUser.uid)
+			db.collection('tweets').add({
+				pageNumber: Number(tweet.pageNumber),
+				word1: tweet.word1,
+				word2: tweet.word2,
+				word3: tweet.word3,
+				bookRef: bookRef,
+				userRef: userRef,
+				createTime: firebase.firestore.FieldValue.serverTimestamp(),
+				updateTime: firebase.firestore.FieldValue.serverTimestamp(),
+			})
+			router.push(`/users/${currentUser.uid}?tab=1`)
+		}
 	}
 
 	return (
@@ -51,13 +49,7 @@ export default function Home() {
 			<div className={styles.row}>
 				<div className={styles.flexWrapperTwo}>
 					<div className={styles.p}>p.</div>
-					<input
-						type="text"
-						className={styles.rectangle22}
-						onChange={e => {
-							setPageNumber(e.target.value)
-						}}
-					/>
+					<input type="text" className={styles.rectangle22} onChange={e => setTweet({ ...tweet, pageNumber: e.target.value })} />
 				</div>
 			</div>
 
@@ -66,41 +58,26 @@ export default function Home() {
 					<input
 						type="text"
 						className={styles.rectangle19}
-						onChange={e => {
-							setWord1(e.target.value)
-						}}
+						placeholder="Word1"
+						onChange={e => setTweet({ ...tweet, word1: e.target.value })}
 					/>
 					<input
 						type="text"
 						className={styles.rectangle19}
-						onChange={e => {
-							setWord2(e.target.value)
-						}}
+						placeholder="Word2"
+						onChange={e => setTweet({ ...tweet, word2: e.target.value })}
 					/>
 					<input
 						type="text"
 						className={styles.rectangle19}
-						onChange={e => {
-							setWord3(e.target.value)
-						}}
+						placeholder="Word3"
+						onChange={e => setTweet({ ...tweet, word3: e.target.value })}
 					/>
 				</div>
 			</div>
 			<div className={styles.row}>
 				<button className={styles.group36}>
-					<p
-						className={styles.text}
-						onClick={() =>
-							hondleCreateBook({
-								tweet: {
-									pageNumber: pageNumber,
-									word1: word1,
-									word2: word2,
-									word3: word3,
-								},
-							})
-						}
-					>
+					<p className={styles.text} onClick={() => hondleCreateBook()}>
 						アウトプット
 					</p>
 				</button>
