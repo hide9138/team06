@@ -10,21 +10,18 @@ import { db } from '../../firebase/firebase'
 import { useAuth } from '../../components/AuthContext'
 import { useRouter } from 'next/router'
 
-const UserProfile = () => {
-	const { id, displayName, selfIntroduction, photoURL } = useUser()
-	if (!id) return null
-
+const UserProfile = ({ user }) => {
 	return (
 		<div className={styles.user__profile__container}>
 			<div className={styles.user__profile__info__container}>
 				<div className={styles.user__profile__info__block}>
-					<Image src={photoURL} width={90} height={90} alt="user photo" className={styles.user__image} />
+					<Image src={user.photoURL} width={90} height={90} alt="user photo" className={styles.user__image} />
 					<div className={styles.user__profile__info}>
-						<h4 className={styles.user__display__name}>{displayName}</h4>
-						<p className={styles.username}>@{id.slice(0, 5)}</p>
+						<h4 className={styles.user__display__name}>{user.displayName}</h4>
+						<p className={styles.username}>@{user.id.slice(0, 5)}</p>
 					</div>
 				</div>
-				<p className={styles.user__profile__info__text}>{selfIntroduction}</p>
+				<p className={styles.user__profile__info__text}>{user.selfIntroduction}</p>
 				<div className={styles.user__relations}>
 					<p className={styles.user__profile__info__text}>
 						フォロー <span className={styles.cnt}>100</span>
@@ -42,36 +39,35 @@ const UserProfile = () => {
 
 const Outputs = ({ outputs }) => {
 	return (
-		<>
-			<div className={styles.contents__container}>
-				{outputs.map((output, i) => (
-					<OutputCard key={i} output={output} />
-				))}
-			</div>
-		</>
+		<div className={styles.contents__container}>
+			{outputs.map((output, i) => (
+				<OutputCard key={i} output={output} />
+			))}
+		</div>
 	)
 }
 
 const Likes = ({ likes }) => {
 	return (
-		<>
-			<div className={styles.contents__container}>
-				{likes.map((output, i) => (
-					<OutputCard key={i} output={output} />
-				))}
-			</div>
-		</>
+		<div className={styles.contents__container}>
+			{likes.map((output, i) => (
+				<OutputCard key={i} output={output} />
+			))}
+		</div>
 	)
 }
 
 const Home = () => {
 	const tabId = Number(useRouter().query.tab)
+	const userId = useRouter().query.id
+
 	const [tabIndex, setTabIndex] = useState(tabId || 0)
 	const [outputs, setOutputs] = useState([])
 	const [books, setBooks] = useState([])
 	const [likes, setLikes] = useState([])
+	const [user, setUser] = useState([])
 	const { currentUser } = useAuth()
-	const userRef = db.collection('users').doc(currentUser.uid)
+	const userRef = db.collection('users').doc(userId)
 
 	useEffect(() => {
 		const getOutputs = async () => {
@@ -113,15 +109,22 @@ const Home = () => {
 				return { user, tweet, book }
 			})
 			setLikes(likes)
-			console.log(likes)
 		}
-		if (currentUser) getOutputs()
+		const getUser = async () => {
+			const userSnapshot = await userRef.get()
+			setUser({ id: userSnapshot.id, ...userSnapshot.data() })
+		}
+		if (currentUser) {
+			getOutputs()
+			getUser()
+		}
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	return (
 		<main className={styles.main}>
-			<UserProfile />
+			{user.id && <UserProfile user={user} />}
 
 			{/* Tab */}
 			<div className={styles.tabs}>

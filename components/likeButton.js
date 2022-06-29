@@ -18,7 +18,6 @@ const LikeButton = ({ tweetRef }) => {
 		const querySnapshot = await db.collection('likes').where('tweetRef', '==', tweetRef).get()
 		const count = querySnapshot.docs.length
 		setLikeCount(count)
-		console.log(count)
 
 		if (count !== 0) {
 			const isLike = querySnapshot.docs.some(doc => doc.data().userRef.id == userRef.id)
