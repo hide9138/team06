@@ -5,37 +5,11 @@ import { useAuth } from '../../components/AuthContext'
 import Layout from '../../components/layout'
 import { db } from '../../firebase/firebase'
 import Link from 'next/link'
+import LikeButton from '../../components/likeButtonn'
 
 const Home = () => {
 	const { currentUser } = useAuth()
 	const [outputs, setOutputs] = useState([])
-
-  const LikeButton = (bookRef) => {
-    const [count, setCount] = useState()
-    const { currentUser } = useAuth()
-    const userRef = db.collection('users').doc(currentUser.uid)
-    db.collection('likes')
-      .where('bookRef', '==', bookRef.bookRef)
-      .get()
-      .then(querySnapshot => {
-        const size = querySnapshot.size
-        setCount(size)
-      })
-    const handleClick = () => {
-      db.collection('likes').add({
-        userRef: userRef,
-        bookRef: bookRef.bookRef,
-      })
-      db.collection('likes')
-        .where('bookRef', '==', bookRef.bookRef)
-        .get()
-        .then(querySnapshot => {
-          const size = querySnapshot.size
-          setCount(size)
-        })
-    }
-    return <span className={styles.btn} onClick={handleClick}>♥ {count}</span>
-  }
 
 	useEffect(() => {
 		const getOutputs = async () => {
@@ -74,13 +48,13 @@ const Home = () => {
 						{/* User */}
 						{output.user && output.tweet && (
 							<div className={styles.user__container}>
-								<div className={styles.user__image__area}>
-									{output.user && (
-										<Link href={`/users/${output.user.id}`}>
+								{output.user && (
+									<Link href={`/users/${output.user.id}`}>
+										<div className={styles.user__image__area}>
 											<Image src={output.user.photoURL} width={50} height={50} alt="user photo" className={styles.user__image} />
-										</Link>
-									)}
-								</div>
+										</div>
+									</Link>
+								)}
 								<div className={styles.user__info}>
 									<p className={styles.user__name}>{output.user.displayName}</p>
 									<p className={styles.output__words}>
@@ -95,11 +69,11 @@ const Home = () => {
 						{/* Book */}
 						{output.book && (
 							<div className={styles.book__container}>
-								<div className={styles.book__image__area}>
-									<Link href={`/books/${output.book.id}`}>
+								<Link href={`/books/${output.book.id}`}>
+									<div className={styles.book__image__area}>
 										<Image src={output.book.imageLink} width={72} height={100} alt="user photo" className={styles.book__image} />
-									</Link>
-								</div>
+									</div>
+								</Link>
 								<div className={styles.book__info}>
 									<p>{output.book.title}</p>
 									<p>著者名：{output.book.authors.join(', ')}</p>
@@ -108,7 +82,7 @@ const Home = () => {
 						)}
 						{/* Button */}
 						<div className={styles.btn__container}>
-              <LikeButton bookRef={output.tweet.bookRef} />
+							<LikeButton bookRef={output.tweet.bookRef} />
 						</div>
 					</div>
 				))}
