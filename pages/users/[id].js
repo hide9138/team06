@@ -52,18 +52,33 @@ const Outputs = ({ outputs }) => {
 	)
 }
 
+const Likes = ({ likes }) => {
+	return (
+		<>
+			<div className={styles.contents__container}>
+				{likes.map((output, i) => (
+					<OutputCard key={i} output={output} />
+				))}
+			</div>
+		</>
+	)
+}
+
 const Home = () => {
 	const tabId = Number(useRouter().query.tab)
 	const [tabIndex, setTabIndex] = useState(tabId || 0)
 	const [outputs, setOutputs] = useState([])
 	const [books, setBooks] = useState([])
+	const [likes, setLikes] = useState([])
 	const { currentUser } = useAuth()
+	const userRef = db.collection('users').doc(currentUser.uid)
 
 	useEffect(() => {
 		const getOutputs = async () => {
-			const userRef = db.collection('users').doc(currentUser.uid)
 			const tweetRefs = await db.collection('tweets').where('userRef', '==', userRef).orderBy('updateTime', 'desc').get()
-			const tweetList = tweetRefs.docs.map(querySnapshot => querySnapshot.data())
+			const tweetList = tweetRefs.docs.map(querySnapshot => {
+				return { ref: querySnapshot.ref, ...querySnapshot.data() }
+			})
 			const userRefs = await db.collection('users').get()
 			const userList = userRefs.docs.map(querySnapshot => {
 				return { mainId: querySnapshot.id, ...querySnapshot.data() }
@@ -73,14 +88,32 @@ const Home = () => {
 				return { mainId: querySnapshot.id, ...querySnapshot.data() }
 			})
 			const outputs = tweetList.map(tweet => {
-				const user = userList.filter(user => user.mainId == tweet.userRef.id)[0]
 				const book = bookList.filter(book => book.mainId == tweet.bookRef.id)[0]
+				const user = userList.filter(user => user.mainId == tweet.userRef.id)[0]
 				return { user, tweet, book }
 			})
 
 			const booksData = bookList.filter(book => String(book.userRef.id) === String(userRef.id))
 			setBooks(booksData)
 			setOutputs(outputs)
+
+			//いいねした一覧データ取得
+			const likeRefs = await db.collection('likes').where('userRef', '==', userRef).get()
+			const likeList = likeRefs.docs.map(querySnapshot => querySnapshot.data())
+			const tweetLikeRefs = await db.collection('tweets').orderBy('updateTime', 'desc').get()
+			let tweetLikeList = tweetLikeRefs.docs.map(querySnapshot => {
+				return { mainId: querySnapshot.id, ref: querySnapshot.ref, ...querySnapshot.data() }
+			})
+
+			tweetLikeList = tweetLikeList.filter(tweet => likeList.some(like => tweet.mainId === like.tweetRef.id))
+
+			const likes = tweetLikeList.map(tweet => {
+				const book = bookList.filter(book => book.mainId == tweet.bookRef.id)[0]
+				const user = userList.filter(user => user.mainId == tweet.userRef.id)[0]
+				return { user, tweet, book }
+			})
+			setLikes(likes)
+			console.log(likes)
 		}
 		if (currentUser) getOutputs()
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -102,7 +135,7 @@ const Home = () => {
 			{/* Tab contents */}
 			{tabIndex === 0 && <BookShelf books={books} />}
 			{tabIndex === 1 && <Outputs outputs={outputs} />}
-			{tabIndex === 2 && <Outputs outputs={outputs} />}
+			{tabIndex === 2 && <Likes likes={likes} />}
 		</main>
 	)
 }

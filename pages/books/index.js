@@ -5,7 +5,7 @@ import { useAuth } from '../../components/AuthContext'
 import Layout from '../../components/layout'
 import { db } from '../../firebase/firebase'
 import Link from 'next/link'
-import LikeButton from '../../components/likeButtonn'
+import LikeButton from '../../components/likeButton'
 
 const Home = () => {
 	const { currentUser } = useAuth()
@@ -14,7 +14,9 @@ const Home = () => {
 	useEffect(() => {
 		const getOutputs = async () => {
 			const tweetRefs = await db.collection('tweets').orderBy('updateTime', 'desc').get()
-			const tweetList = tweetRefs.docs.map(querySnapshot => querySnapshot.data())
+			const tweetList = tweetRefs.docs.map(querySnapshot => {
+				return { ref: querySnapshot.ref, ...querySnapshot.data() }
+			})
 			const userRefs = await db.collection('users').get()
 			const userList = userRefs.docs.map(querySnapshot => {
 				return { mainId: querySnapshot.id, ...querySnapshot.data() }
@@ -82,7 +84,7 @@ const Home = () => {
 						)}
 						{/* Button */}
 						<div className={styles.btn__container}>
-							<LikeButton bookRef={output.tweet.bookRef} />
+							<LikeButton tweetRef={output.tweet.ref} />
 						</div>
 					</div>
 				))}

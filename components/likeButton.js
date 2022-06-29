@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import styles from '../styles/Homepage.module.css'
-import { useAuth } from '../components/AuthContext'
+import { useAuth } from './AuthContext'
 import { db } from '../firebase/firebase'
 
-const LikeButton = ({ bookRef }) => {
+const LikeButton = ({ tweetRef }) => {
 	const [isLike, setIsLike] = useState(false)
 	const [likeCount, setLikeCount] = useState()
 	const { currentUser } = useAuth()
@@ -15,7 +15,7 @@ const LikeButton = ({ bookRef }) => {
 	}, [])
 
 	const countLike = async () => {
-		const querySnapshot = await db.collection('likes').where('bookRef', '==', bookRef).get()
+		const querySnapshot = await db.collection('likes').where('tweetRef', '==', tweetRef).get()
 		const count = querySnapshot.docs.length
 		setLikeCount(count)
 		console.log(count)
@@ -29,11 +29,11 @@ const LikeButton = ({ bookRef }) => {
 	}
 
 	const handleClick = async () => {
-		const likeRefs = await db.collection('likes').where('bookRef', '==', bookRef).where('userRef', '==', userRef).get()
+		const likeRefs = await db.collection('likes').where('tweetRef', '==', tweetRef).where('userRef', '==', userRef).get()
 		if (likeRefs.docs.length === 0) {
 			db.collection('likes').add({
 				userRef: userRef,
-				bookRef: bookRef,
+				tweetRef: tweetRef,
 			})
 		} else {
 			likeRefs.docs[0].ref.delete()
@@ -42,7 +42,7 @@ const LikeButton = ({ bookRef }) => {
 	}
 
 	return (
-		<span className={styles.btn} onClick={() => handleClick(bookRef)}>
+		<span className={styles.btn} onClick={() => handleClick(tweetRef)}>
 			{isLike ? '♥' : '♡'} <span className={styles.count}>{likeCount}</span>
 		</span>
 	)
