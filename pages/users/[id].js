@@ -59,14 +59,16 @@ const Likes = ({ likes }) => {
 
 const Home = () => {
 	const tabId = Number(useRouter().query.tab)
-	const userId = useRouter().query.id
+	let userId = useRouter().query.id
+	const { currentUser } = useAuth()
+	userId = userId == 'mypage' && currentUser ? currentUser.uid : userId
 
 	const [tabIndex, setTabIndex] = useState(tabId || 0)
 	const [outputs, setOutputs] = useState([])
 	const [books, setBooks] = useState([])
 	const [likes, setLikes] = useState([])
 	const [user, setUser] = useState([])
-	const { currentUser } = useAuth()
+
 	const userRef = db.collection('users').doc(userId)
 
 	useEffect(() => {
@@ -118,7 +120,6 @@ const Home = () => {
 			getOutputs()
 			getUser()
 		}
-
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 

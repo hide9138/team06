@@ -5,10 +5,10 @@ export default function Login() {
 	const router = useRouter()
 	const { currentUser, createUser, logout, login } = useAuth()
 
-	const handleLoginButton = () => {
-		login()
-		createUser()
+	const handleLoginButton = async () => {
 		router.push(`users/mypage`)
+		await login()
+		createUser()
 	}
 
 	const handleLogoutButton = () => {
