@@ -45,9 +45,8 @@ const SideBar = () => {
   }
 
   const links = [
-    { href: '/books/', iconPath: 'https://static.overlay-tech.com/assets/c5fee165-810f-4657-a7f5-0c8b69b98c1a.svg', text: 'ホーム' },
-    { href: '/message', iconPath: 'https://static.overlay-tech.com/assets/d704290d-0dc2-4c92-88c9-f094852e5678.svg', text: 'メッセージ' },
     { href: `/users/${id}`, iconPath: `${photoURL}`, text: 'プロフィール' },
+    { href: '/books/', iconPath: '/clock.svg', text: 'タイムライン' },
   ]
 
   return (

@@ -60,20 +60,20 @@ const BookSearchbar = memo(() => {
         }
       })
 
-      counts[Symbol.iterator] = function* () {
-        yield* [...this.entries()].sort((a, b) => b[1] - a[1]);
-      }
+			counts[Symbol.iterator] = function* () {
+				yield* [...this.entries()].sort((a, b) => b[1] - a[1])
+			}
 
-      const results = Array.from(counts).map(([key, _]) => {
-        const book = bookList.filter(book => book.id == key)[0]
-        return book
-      })
+			const results = Array.from(counts).map(([key, _]) => {
+				const book = bookList.filter(book => book.mainId == key)[0]
+				return book
+			})
 
-      // 取得したい分だけ取る
-      setResults(results.slice(0, 6))
-    }
-    getResults()
-  }, [])
+			// 取得したい分だけ取る
+			setResults(results.slice(0, 6))
+		}
+		getResults()
+	}, [])
 
 
   return (
@@ -103,6 +103,6 @@ const BookSearchbar = memo(() => {
   )
 })
 
-BookSearchbar.displayName = "BookSearchbar"
+BookSearchbar.displayName = 'BookSearchbar'
 
-export default BookSearchbar;
+export default BookSearchbar
