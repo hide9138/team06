@@ -39,7 +39,9 @@ const Home = () => {
 
 			const tweetRefs = await db.collection('tweets').orderBy('updateTime', 'desc').get()
 			const tweetDocs = tweetRefs.docs.filter(tweet => bookRefList.some(bookRef => tweet.data().bookRef.isEqual(bookRef)))
-			const tweetList = tweetDocs.map(querySnapshot => querySnapshot.data())
+			const tweetList = tweetDocs.map(querySnapshot => {
+				return { ref: querySnapshot.ref, ...querySnapshot.data() }
+			})
 
 			const userRefs = await db.collection('users').get()
 			const userList = userRefs.docs.map(querySnapshot => {

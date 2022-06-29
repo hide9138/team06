@@ -4,9 +4,9 @@ import styles from '../styles/components/outputCard.module.css'
 import Link from 'next/link'
 import LikeButton from './likeButton'
 
-const OutputCard = ({ key, output }) => {
+const OutputCard = ({ output }) => {
 	return (
-		<div key={key} className={styles.content__output}>
+		<div className={styles.content__output}>
 			{/* User */}
 
 			<div className={styles.user__container}>
@@ -28,7 +28,7 @@ const OutputCard = ({ key, output }) => {
 
 			{/* Book */}
 			<div className={styles.book__container}>
-				<Link href={`/books/${output.book.mainId}`}>
+				<Link href={`/books/${output.book.id}`}>
 					<div className={styles.book__image__area}>
 						<Image src={output.book.imageLink} width={72} height={100} alt="user photo" className={styles.book__image} />
 					</div>
