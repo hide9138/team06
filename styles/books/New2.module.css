@@ -136,6 +136,7 @@
 
 .p {
 	margin-right: 18px;
+	text-align: center;
 	font-family: 'Inter';
 	font-size: 40px;
 	font-weight: 400;
@@ -149,6 +150,7 @@
 	justify-content: space-around;
 }
 .rectangle19 {
+	text-align: center;
 	width: 310px;
 	height: 56px;
 	background-color: white;
