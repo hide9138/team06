@@ -1,5 +1,6 @@
 .container {
 	position: relative;
+	display: block;
 	min-width: 100vh;
 	min-height: 100vh;
 	max-height: 100vh;
@@ -7,6 +8,21 @@
 	display: flex;
 	justify-content: center;
 	overflow: auto;
+}
+.close__button {
+	position: absolute;
+	top: 0px;
+	left: 50px;
+	color: white;
+	font-size: 100px;
+	font-weight: bold;
+}
+.close__button:hover {
+	color: gray;
+}
+
+.close__button:active {
+	transform: translateY(-5px);
 }
 .main {
 	width: 50%;
