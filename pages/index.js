@@ -22,7 +22,7 @@ export default function Login() {
 				<div>
 					<h2>ログインしています.</h2>
 					<h2>{currentUser.displayName}</h2>
-					<button onClick={() => router.push('books')}>Homeへ</button>
+					<button onClick={() => router.push(`users/mypage`)}>Homeへ</button>
 					<button onClick={handleLogoutButton}>ログアウト</button>
 				</div>
 			)}
