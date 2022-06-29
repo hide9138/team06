@@ -4,6 +4,8 @@ import Link from 'next/link'
 import BookCard from './bookCard'
 import styles from '../styles/components/bookSearch.module.css'
 import firebase, { db } from '../firebase/firebase'
+import axios from 'axios'
+// import { SerchBooks } from './BookApiFetch'
 
 // type Book = {
 //   id: string
@@ -14,17 +16,30 @@ import firebase, { db } from '../firebase/firebase'
 //   smallImageLink: string
 //   ImageLink: string
 // }
+const SerchBooks = serchWord => {
+	const [books, setBooks] = useState([])
+	useEffect(() => {
+		const fetchData = async () => {
+			const url = `https://www.googleapis.com/books/v1/volumes/?q=${serchWord}&maxResults=2&key=${process.env.NEXT_PUBLIC_BOOK_API_KEY}`
+			const result = await axios(url)
+			const items = result.data.items
+			const outData = items.map(item => format(item))
+			setBooks(outData)
+		}
+		fetchData()
+	}, [serchWord])
+
+	return books
+}
 
 const BookSearchbar = memo(() => {
-  // デフォルトデータと検索語のデータ用
-  const [results, setResults] = useState([])
   // 入力値のデータ
   const [searchWord, setSearchWord] = useState("")
+  // デフォルトデータと検索語のデータ用
+  const [results, setResults] = useState([])
 
-  const handleSearch = async () => {
-    if (!searchWord) return;
-
-    const searchedResults = await GetBooks(searchWord);
+  const handleSearch = async (searchWord) => {
+    const searchedResults = SerchBooks(searchWord);
     setResults(searchedResults)
   }
 
@@ -37,11 +52,11 @@ const BookSearchbar = memo(() => {
       const likeRefs = await db.collection('likes').get()
       let counts = new Map()
       likeRefs.docs.map(querySnapshot => {
-        const bookRef = querySnapshot.data().bookRef.id
-        if (counts.has(bookRef)) {
-          counts.set(bookRef, counts.get(bookRef) + 1)
+        const tweetRef = querySnapshot.data().tweetRef.id
+        if (counts.has(tweetRef)) {
+          counts.set(tweetRef, counts.get(tweetRef) + 1)
         } else {
-          counts.set(bookRef, 1)
+          counts.set(tweetRef, 1)
         }
       })
 
@@ -67,7 +82,8 @@ const BookSearchbar = memo(() => {
         <div className={styles.search__icon}>
           <Image src="/search.svg" width="16" height="16" alt="search icon" />
         </div>
-        <input className={styles.search__input} type="text" placeholder="本のタイトル、著者名" onClick={(e) => setSearchWord(e.target.value)} />
+        <input className={styles.search__input} type="text" placeholder="本のタイトル、著者名" onChange={(e) => setSearchWord(e.target.value)} />
+        <button value={searchWord} onClick={(e) => handleSearch(e.target.value)}>検索</button>
       </div>
       <div>
         <p className={styles.title}>本を探す</p>
