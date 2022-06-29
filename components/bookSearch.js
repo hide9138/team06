@@ -32,11 +32,11 @@ const BookSearchbar = memo(() => {
 		const getResults = async () => {
 			const bookRefs = await db.collection('books').get()
 			const bookList = bookRefs.docs.map(querySnapshot => {
-				return { mainId: querySnapshot.id, ...querySnapshot.data() }
+				return { ...querySnapshot.data(), id: querySnapshot.id }
 			})
-			const likeRefs = await db.collection('likes').get()
+			const tweetRefs = await db.collection('tweets').get()
 			let counts = new Map()
-			likeRefs.docs.map(querySnapshot => {
+			tweetRefs.docs.map(querySnapshot => {
 				const bookRef = querySnapshot.data().bookRef.id
 				if (counts.has(bookRef)) {
 					counts.set(bookRef, counts.get(bookRef) + 1)
@@ -50,7 +50,7 @@ const BookSearchbar = memo(() => {
 			}
 
 			const results = Array.from(counts).map(([key, _]) => {
-				const book = bookList.filter(book => book.mainId == key)[0]
+				const book = bookList.filter(book => book.id == key)[0]
 				return book
 			})
 
