@@ -39,34 +39,41 @@ const BookSearchbar = memo(() => {
     const getResults = async () => {
       const tweetRefs = await db.collection('tweets').get()
       const tweetList = tweetRefs.docs.map(querySnapshot => {
-        return { ...querySnapshot.data(), id: querySnapshot.id }
+        return { bookRef: querySnapshot.data().bookRef, id: querySnapshot.id }
       })
+
+      const bookRefs = await db.collection('books').get()
+      const bookList = bookRefs.docs.map(querySnapshot => {
+        return { ...querySnapshot.data(), mainId: querySnapshot.id }
+      })
+
       const likeRefs = await db.collection('likes').get()
       let counts = new Map()
       likeRefs.docs.map(querySnapshot => {
-        const tweetRef = querySnapshot.data().tweetRef.id
-        if (counts.has(tweetRef)) {
-          counts.set(tweetRef, counts.get(tweetRef) + 1)
+        const tweetId = querySnapshot.data().tweetRef.id
+        const bookDocumentId = tweetList.filter(tweet => tweet.id === tweetId)[0].bookRef.id
+        const bookId = bookList.filter(book => book.mainId === bookDocumentId)[0].id
+
+        if (counts.has(bookId)) {
+          counts.set(bookId, counts.get(bookId) + 1)
         } else {
-          counts.set(tweetRef, 1)
+          counts.set(bookId, 1)
         }
       })
 
-			counts[Symbol.iterator] = function* () {
-				yield* [...this.entries()].sort((a, b) => b[1] - a[1])
-			}
+      counts[Symbol.iterator] = function* () {
+        yield* [...this.entries()].sort((a, b) => b[1] - a[1])
+      }
 
-			const results = Array.from(counts).map(([key, _]) => {
-				const tweet = tweetList.filter(tweet => tweet.mainId == key)[0]
-				return tweet
-			})
+      const results = Array.from(counts).map(([key, _]) => {
+        return bookList.filter(book => book.id == key)[0]
+      })
 
-			// 取得したい分だけ取る
-			setResults(results.slice(0, 6))
-		}
-		getResults()
-	}, [])
-
+      // 取得したい分だけ取る
+      setResults(results.slice(0, 6))
+    }
+    getResults()
+  }, [])
 
   return (
     <div className={styles.book__search}>
