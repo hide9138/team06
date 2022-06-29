@@ -95,11 +95,11 @@ const BookCard = ({ props }) => {
 				{book.imageLink && <Image className={styles.num2022061316151} src={book.imageLink} width="159" height="229" alt="book" />}
 
 				<div className={styles.flexWrapperFive}>
-					<p className={styles.title}>{book.title}</p>
-					<p className={styles.author}>{book.authors}</p>
+					{book.title && <p className={styles.title}>{book.title}</p>}
+					{book.authors && <p className={styles.author}>{book.authors}</p>}
 				</div>
 			</div>
-			<p className={styles.booksapidescription}>{book.description}</p>
+			{book.description && <p className={styles.booksapidescription}>{book.description}</p>}
 		</div>
 	)
 }

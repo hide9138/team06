@@ -86,17 +86,17 @@ const Home = () => {
 					<>
 						<div className={styles.book__info__block}>
 							<div className={styles.book__info__book__image__area}>
-								<Image src={bookDetail.imageLink} width="220" height="300" alt="book image" className={styles.book__info__book__image} />
+								{bookDetail.imageLink && <Image src={bookDetail.imageLink} width="220" height="300" alt="book image" className={styles.book__info__book__image} />}
 							</div>
 							<div className={styles.book__info__basic__info}>
 								<p className={styles.book__info__title}>{bookDetail.title}</p>
-								<p className={styles.book__info__author}>著者名：{bookDetail.authors.join(', ')}</p>
-								<p className={styles.book__info__publisher}>出版社: {bookDetail.publisher}</p>
-								<p className={styles.book__info__publisher}>{bookDetail.publishDate}</p>
+								{bookDetail.authors && <p className={styles.book__info__author}>著者名：{bookDetail.authors.join(', ')}</p>}
+								{bookDetail.publisher && <p className={styles.book__info__publisher}>出版社: {bookDetail.publisher}</p>}
+								{bookDetail.publishDate && <p className={styles.book__info__publisher}>{bookDetail.publishDate}</p>}
 							</div>
 						</div>
 						<div>
-							<p className={styles.book__info__description}>{bookDetail.description}</p>
+							{bookDetail.description && <p className={styles.book__info__description}>{bookDetail.description}</p>}
 						</div>
 					</>
 				)}
