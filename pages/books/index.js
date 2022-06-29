@@ -10,6 +10,33 @@ const Home = () => {
 	const { currentUser } = useAuth()
 	const [outputs, setOutputs] = useState([])
 
+  const LikeButton = (bookRef) => {
+    const [count, setCount] = useState()
+    const { currentUser } = useAuth()
+    const userRef = db.collection('users').doc(currentUser.uid)
+    db.collection('likes')
+      .where('bookRef', '==', bookRef.bookRef)
+      .get()
+      .then(querySnapshot => {
+        const size = querySnapshot.size
+        setCount(size)
+      })
+    const handleClick = () => {
+      db.collection('likes').add({
+        userRef: userRef,
+        bookRef: bookRef.bookRef,
+      })
+      db.collection('likes')
+        .where('bookRef', '==', bookRef.bookRef)
+        .get()
+        .then(querySnapshot => {
+          const size = querySnapshot.size
+          setCount(size)
+        })
+    }
+    return <span className={styles.btn} onClick={handleClick}>♥ {count}</span>
+  }
+
 	useEffect(() => {
 		const getOutputs = async () => {
 			const tweetRefs = await db.collection('tweets').orderBy('updateTime', 'desc').get()
@@ -81,15 +108,7 @@ const Home = () => {
 						)}
 						{/* Button */}
 						<div className={styles.btn__container}>
-							<div className={styles.btn}>
-								<Image
-									src="https://static.overlay-tech.com/assets/dea603c0-b98a-4f6f-89ff-861082b18421.svg"
-									width="16"
-									height="16"
-									alt="like"
-								/>
-								<p className={styles.count}>6</p>
-							</div>
+              <LikeButton bookRef={output.tweet.bookRef} />
 						</div>
 					</div>
 				))}
