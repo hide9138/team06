@@ -5,6 +5,7 @@ import { useAuth } from '../../components/AuthContext'
 import Layout from '../../components/layout'
 import { db } from '../../firebase/firebase'
 import Link from 'next/link'
+import LikeButton from '../../components/likeButton'
 
 const Home = () => {
 	const { currentUser } = useAuth()
@@ -13,7 +14,9 @@ const Home = () => {
 	useEffect(() => {
 		const getOutputs = async () => {
 			const tweetRefs = await db.collection('tweets').orderBy('updateTime', 'desc').get()
-			const tweetList = tweetRefs.docs.map(querySnapshot => querySnapshot.data())
+			const tweetList = tweetRefs.docs.map(querySnapshot => {
+				return { ref: querySnapshot.ref, ...querySnapshot.data() }
+			})
 			const userRefs = await db.collection('users').get()
 			const userList = userRefs.docs.map(querySnapshot => {
 				return { mainId: querySnapshot.id, ...querySnapshot.data() }
@@ -47,13 +50,13 @@ const Home = () => {
 						{/* User */}
 						{output.user && output.tweet && (
 							<div className={styles.user__container}>
-								<div className={styles.user__image__area}>
-									{output.user && (
-										<Link href={`/users/${output.user.id}`}>
+								{output.user && (
+									<Link href={`/users/${output.user.id}`}>
+										<div className={styles.user__image__area}>
 											<Image src={output.user.photoURL} width={50} height={50} alt="user photo" className={styles.user__image} />
-										</Link>
-									)}
-								</div>
+										</div>
+									</Link>
+								)}
 								<div className={styles.user__info}>
 									<p className={styles.user__name}>{output.user.displayName}</p>
 									<p className={styles.output__words}>
@@ -68,11 +71,11 @@ const Home = () => {
 						{/* Book */}
 						{output.book && (
 							<div className={styles.book__container}>
-								<div className={styles.book__image__area}>
-									<Link href={`/books/${output.book.id}`}>
+								<Link href={`/books/${output.book.id}`}>
+									<div className={styles.book__image__area}>
 										<Image src={output.book.imageLink} width={72} height={100} alt="user photo" className={styles.book__image} />
-									</Link>
-								</div>
+									</div>
+								</Link>
 								<div className={styles.book__info}>
 									<p>{output.book.title}</p>
 									<p>著者名：{output.book.authors.join(', ')}</p>
@@ -81,15 +84,7 @@ const Home = () => {
 						)}
 						{/* Button */}
 						<div className={styles.btn__container}>
-							<div className={styles.btn}>
-								<Image
-									src="https://static.overlay-tech.com/assets/dea603c0-b98a-4f6f-89ff-861082b18421.svg"
-									width="16"
-									height="16"
-									alt="like"
-								/>
-								<p className={styles.count}>6</p>
-							</div>
+							<LikeButton tweetRef={output.tweet.ref} />
 						</div>
 					</div>
 				))}
