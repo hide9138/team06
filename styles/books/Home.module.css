@@ -55,6 +55,14 @@
 	flex-direction: column;
 	justify-content: space-between;
 }
+.book__info__publisher {
+	margin-bottom: 0;
+}
+.book__info__description {
+	color: #fff;
+	font-size: 15px;
+	margin: 10px auto;
+}
 
 .btn__group {
 	display: flex;
