@@ -15,6 +15,11 @@ const AuthProvider = ({ children }) => {
 		const provider = new firebase.auth.GoogleAuthProvider()
 		return auth.signInWithRedirect(provider)
 	}
+	const login_demo = () => {
+		const emailAddress = 'demo@example.com'
+		const password = 'hacku_team6'
+		return auth.signInWithEmailAndPassword(emailAddress, password)
+	}
 	const createUser = () => {
 		return auth.getRedirectResult().then(result => {
 			const user = result.user
@@ -43,6 +48,7 @@ const AuthProvider = ({ children }) => {
 	const value = {
 		currentUser,
 		login,
+		login_demo,
 		logout,
 		createUser,
 	}
