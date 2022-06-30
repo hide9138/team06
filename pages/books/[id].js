@@ -66,14 +66,19 @@ const Home = () => {
 		return <></>
 	}
 
-	const hondleCreateBook = () => {
+	const hondleCreateBook = async () => {
 		const userRef = db.collection('users').doc(currentUser.uid)
-		db.collection('books').add({
-			...bookDetail,
-			userRef: userRef,
-			createTime: firebase.firestore.FieldValue.serverTimestamp(),
-		})
-		router.push('./new1/')
+		const bookRefs = await db.collection('books').where('userRef', '==', userRef).get()
+		if (bookRefs.docs.length === 0) {
+			db.collection('books').add({
+				...bookDetail,
+				userRef: userRef,
+				createTime: firebase.firestore.FieldValue.serverTimestamp(),
+			})
+			router.push('./new1/')
+		} else {
+			window.alert('すでに本棚に同じ本が存在しています')
+		}
 	}
 
 	return (

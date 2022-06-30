@@ -57,11 +57,10 @@ const BookShelf = () => {
 		})
 		//book削除
 		bookRef.delete()
-		console.log('削除成功')
 	}
 	const getBooks = async () => {
-		const bookCols = await db.collection('books').get()
-		const bookList = bookCols.docs.map(doc => {
+		const bookRefs = await db.collection('books').get()
+		const bookList = bookRefs.docs.map(doc => {
 			return { mainId: doc.id, data: doc.data() }
 		})
 		setBooks(bookList)
