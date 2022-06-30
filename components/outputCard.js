@@ -14,9 +14,12 @@ const OutputCard = ({ output, setIsDelete }) => {
 		router.push(`/books/edit/${output.tweet.mainId}`)
 	}
 	const hondleDeleteTweetButton = async () => {
-		await deleteTweet()
-		router.push(`/users/mypage?tab=1`)
-		setIsDelete(flag => !flag)
+		const flag = window.confirm('本当に削除しますか？')
+		if (flag) {
+			await deleteTweet()
+			router.push(`/users/mypage?tab=1`)
+			setIsDelete(flag => !flag)
+		}
 	}
 	const deleteTweet = async () => {
 		console.log(output.tweet.mainId)

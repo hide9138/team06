@@ -24,7 +24,7 @@ export const getBook = async (bookId, updateState) => {
 	console.log(bookDetail)
 	if (bookDetail.publishedDate) bookDetail.publishedDate = bookDetail.publishedDate.replace('-', '/')
 	if (bookDetail.description) bookDetail.description = bookDetail.description.replace(/(<([^>]+)>)/gi, '')
-	if (bookDetail.description && bookDetail.description.length > 500) bookDetail.description = bookDetail.description.substr(0, 500) + '...'
+	if (bookDetail.description && bookDetail.description.length > 200) bookDetail.description = bookDetail.description.substr(0, 200) + '...'
 	updateState(bookDetail)
 }
 
