@@ -1,5 +1,196 @@
+.form {
+	background: #59bc6c;
+	height: 100%;
+	width: 100%;
+	position: relative;
+	padding-bottom: 2rem;
+}
+
+.row {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	/* flex-direction: column; */
+}
+
+.batsu {
+	position: absolute;
+	/* display: block; */
+	/* position: relative; */
+	left: 50px;
+	top: 50px;
+	width: 30px;
+	height: 30px;
+	background-color: #fff;
+}
+.batsu::before,
+.batsu::after {
+	/* 共通設定 */
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 5px; /* 棒の幅（太さ） */
+	height: 30px; /* 棒の高さ */
+	background: #fff;
+}
+
+.batsu::before {
+	transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.batsu::after {
+	transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.num3 {
+	text-align: center;
+	font-family: 'Inter';
+	font-size: 50px;
+	font-weight: 400;
+	line-height: normal;
+	color: white;
+	margin: 30px 0;
+	text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+	letter-spacing: 0.7px;
+}
+
+.bookCard {
+	background-color: white;
+	width: 80%;
+	display: flex;
+	margin-bottom: 30px;
+	border-radius: 20px;
+	padding: 29px 27px 14px 19px;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	word-wrap: break-word;
+	overflow: hidden;
+}
+
+.flexWrapperFour {
+	margin-bottom: 5px;
+	display: flex;
+	align-items: flex-start;
+}
+.num2022061316151 {
+	box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+	border-radius: 20px;
+}
+
+.flexWrapperFive {
+	margin-left: 1rem;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+}
+.bookTitle {
+	height: 25px;
+	color: black;
+	letter-spacing: 0.28px;
+	font-family: 'Inter';
+	font-size: 20px;
+	font-weight: 400;
+	line-height: normal;
+	word-wrap: break-word;
+}
+
+.author {
+	width: 337px;
+	color: black;
+	letter-spacing: 0.28px;
+	font-family: 'Inter';
+	font-size: 20px;
+	font-weight: 400;
+	line-height: normal;
+}
+
+.descriptionWrapper {
+	display: flex;
+	height: fit-content;
+	overflow: hidden;
+	padding: 0.5em;
+}
+.booksapidescription {
+	color: black;
+	letter-spacing: 0.28px;
+	font-family: 'Inter';
+	font-size: 20px;
+	font-weight: 400;
+	line-height: normal;
+	word-wrap: break-word;
+	text-overflow: ellipsis;
+}
+
+.flexWrapperTwo {
+	margin-bottom: 31px;
+	padding: 0 40px 0 0;
+	display: flex;
+	justify-content: center;
+}
+
+.p {
+	margin-right: 18px;
+	text-align: center;
+	font-family: 'Inter';
+	font-size: 40px;
+	font-weight: 400;
+	line-height: normal;
+	color: white;
+}
+
+.flexWrapperThree {
+	margin-bottom: 48px;
+	display: flex;
+	justify-content: space-around;
+}
+.rectangle19 {
+	text-align: center;
+	width: 30%;
+	height: 56px;
+	background-color: white;
+	border-radius: 20px;
+	border: none;
+	font-size: 20px;
+}
+.rectangle22 {
+	width: 96px;
+	height: 56px;
+	font-size: 20px;
+	background-color: white;
+	border-radius: 20px;
+	border: none;
+}
+
+.rectangle19:not(:last-of-type) {
+	margin-right: 30px;
+}
+
+.group36 {
+	background-color: white;
+	width: 180px;
+	border-radius: 20px;
+	box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25), 0 4px 4px 0 rgba(0, 0, 0, 0.25), 0 4px 4px 0 rgba(0, 0, 0, 0.25),
+		0 4px 4px 0 rgba(0, 0, 0, 0.25);
+	text-align: center;
+}
+.group36:active {
+	transform: translateY(-5px);
+}
+
+.text {
+	margin: 15px 0;
+	color: black;
+	font-family: 'Inter';
+	font-size: 20px;
+	font-weight: 400;
+	line-height: normal;
+}
+
 .container {
 	position: relative;
+	display: block;
 	min-width: 100vh;
 	min-height: 100vh;
 	max-height: 100vh;
@@ -7,6 +198,21 @@
 	display: flex;
 	justify-content: center;
 	overflow: auto;
+}
+.close__button {
+	position: absolute;
+	top: 0px;
+	left: 50px;
+	color: white;
+	font-size: 100px;
+	font-weight: bold;
+}
+.close__button:hover {
+	color: gray;
+}
+
+.close__button:active {
+	transform: translateY(-5px);
 }
 .main {
 	width: 50%;

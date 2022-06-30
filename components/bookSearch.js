@@ -10,7 +10,10 @@ const BookSearchbar = memo(() => {
 	// デフォルトデータと検索語のデータ用
 	const [results, setResults] = useState([])
 
+	const [isSearched, setIsSearched] = useState(false)
+
 	const handleSearch = async searchWord => {
+		setIsSearched(true)
 		const format = item => {
 			const info = item.volumeInfo
 			return {
@@ -65,9 +68,8 @@ const BookSearchbar = memo(() => {
 			const results = Array.from(counts).map(([key, _]) => {
 				return bookList.filter(book => book.id == key)[0]
 			})
-
 			// 取得したい分だけ取る
-			setResults(results.slice(0, 6))
+			setResults(results.slice(0, 5))
 		}
 		getResults()
 	}, [])
@@ -90,7 +92,7 @@ const BookSearchbar = memo(() => {
 				/>
 			</div>
 			<div>
-				<p className={styles.title}>本を探す</p>
+				<p className={styles.title}>{isSearched ? '本を探す' : `おすすめトップ${results?.length}`}</p>
 			</div>
 			{results.map(
 				(result, i) =>
