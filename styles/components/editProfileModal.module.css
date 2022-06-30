@@ -21,6 +21,8 @@
 	justify-content: center;
 	min-width: 90%;
 	max-width: 90%;
+	padding: 1rem;
+	padding-bottom: 3rem;
 }
 
 .input__container {
