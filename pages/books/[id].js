@@ -5,7 +5,7 @@ import styles from '../../styles/books/Home.module.css'
 import { useAuth } from '../../components/AuthContext'
 import OutputCard from '../../components/outputCard'
 import Layout from '../../components/layout'
-import { getBook } from '../../components/BookApiFetch'
+import { getBook } from '../../components/bookApiFetch'
 import firebase, { db } from '../../firebase/firebase'
 
 const Outputs = ({ outputs }) => {

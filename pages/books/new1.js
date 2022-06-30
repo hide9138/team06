@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
-import Link from 'next/link'
-import axios from 'axios'
 import styles from '../../styles/books/New1.module.css'
 import firebase, { db } from '../../firebase/firebase'
 import { useAuth } from '../../components/AuthContext'
+import { serchBooks } from '../../components/bookApiFetch'
 import Modal from '../../components/modal'
 
 export default function Home() {
@@ -43,16 +42,13 @@ export default function Home() {
 	}
 
 	useEffect(() => {
-		if (!bookId) return
-
 		const getBookData = async () => {
 			const book = await db.collection('books').doc(bookId).get()
 			setBook(book.data())
-
 			setIsOpen(true)
 		}
 
-		getBookData()
+		if (bookId) getBookData()
 	}, [bookId])
 
 	const { currentUser } = useAuth()
@@ -81,25 +77,7 @@ export default function Home() {
 
 	const handleSearch = async searchWord => {
 		setIsSearched(true)
-		const format = item => {
-			const info = item.volumeInfo
-			return {
-				id: item.id,
-				title: info.title,
-				authors: info.authors,
-				description: info.description,
-				pageCount: info.pageCount,
-				publisher: info.publisher,
-				publishedDate: info.publishedDate,
-				smallImageLink: info.imageLinks ? info.imageLinks.smallThumbnail : '',
-				imageLink: info.imageLinks ? info.imageLinks.thumbnail : '',
-			}
-		}
-		const url = `https://www.googleapis.com/books/v1/volumes/?q=${searchWord}&maxResults=6&key=${process.env.NEXT_PUBLIC_BOOK_API_KEY}`
-		const result = await axios(url)
-		const items = result.data.items
-		const outData = items.map(item => format(item))
-		setResults(outData)
+		serchBooks(searchWord, setResults)
 	}
 
 	const Content = ({ handleClose }) => (
@@ -154,7 +132,7 @@ export default function Home() {
 	)
 
 	const ContentSearch = () => (
-		<div className={styles.form}>
+		<div className={styles.searchModal}>
 			<div className={styles.book__search}>
 				<div className={styles.search__container}>
 					<div className={styles.search__icon}>
@@ -178,14 +156,13 @@ export default function Home() {
 								<a>
 									<div className={styles.row}>
 										<BookCardSearch key={i} book={result} />
-									</div>										
+									</div>
 								</a>
-						</div>
+							</div>
 						)
 				)}
 			</div>
 		</div>
-		
 	)
 
 	return (
@@ -208,7 +185,7 @@ export default function Home() {
 
 				<Modal isOpen={isOpen} handleClose={handleClose} content={Content({ handleClose })} />
 
-				<Modal isOpen={searchisOpen} handleClose={handleSearchClose} content={ContentSearch( {handleSearchClose })} />
+				<Modal isOpen={searchisOpen} handleClose={handleSearchClose} content={ContentSearch({ handleSearchClose })} />
 			</div>
 		</div>
 	)
@@ -271,11 +248,10 @@ const BookCard = ({ props }) => {
 	)
 }
 
-
 const BookCardSearch = ({ book }) => {
 	const router = useRouter()
 	const { currentUser } = useAuth()
-	const handleaddBook = async (book) => {	
+	const handleaddBook = async book => {
 		const userRef = db.collection('users').doc(currentUser.uid)
 		const id = book.id
 		const bookRefs = await db.collection('books').where('userRef', '==', userRef).where('id', '==', id).get()
@@ -314,7 +290,6 @@ const BookCardSearch = ({ book }) => {
 					</button>
 				</div>
 			</div>
-			
 		</div>
 	)
-	}
+}
