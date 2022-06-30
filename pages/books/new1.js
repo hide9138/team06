@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
+import Link from 'next/link'
+import axios from 'axios'
 import styles from '../../styles/books/New1.module.css'
 import firebase, { db } from '../../firebase/firebase'
 import { useAuth } from '../../components/AuthContext'
@@ -19,12 +21,25 @@ export default function Home() {
 		router.push('/users/mypage')
 	}
 
+	const [results, setResults] = useState([])
+
+	const [isSearched, setIsSearched] = useState(false)
+
 	// modal
 	const [isOpen, setIsOpen] = useState(false)
+	const [searchisOpen, setSearchIsOpen] = useState(false)
+
+	const handleSearchStart = () => {
+		setSearchIsOpen(true)
+	}
 
 	const handleClose = () => {
 		setBookId(null)
 		setIsOpen(false)
+	}
+
+	const handleSearchClose = () => {
+		setSearchIsOpen(false)
 	}
 
 	useEffect(() => {
@@ -62,6 +77,29 @@ export default function Home() {
 		} else {
 			window.alert('空欄を埋めてください')
 		}
+	}
+
+	const handleSearch = async searchWord => {
+		setIsSearched(true)
+		const format = item => {
+			const info = item.volumeInfo
+			return {
+				id: item.id,
+				title: info.title,
+				authors: info.authors,
+				description: info.description,
+				pageCount: info.pageCount,
+				publisher: info.publisher,
+				publishedDate: info.publishedDate,
+				smallImageLink: info.imageLinks ? info.imageLinks.smallThumbnail : '',
+				imageLink: info.imageLinks ? info.imageLinks.thumbnail : '',
+			}
+		}
+		const url = `https://www.googleapis.com/books/v1/volumes/?q=${searchWord}&maxResults=6&key=${process.env.NEXT_PUBLIC_BOOK_API_KEY}`
+		const result = await axios(url)
+		const items = result.data.items
+		const outData = items.map(item => format(item))
+		setResults(outData)
 	}
 
 	const Content = ({ handleClose }) => (
@@ -115,11 +153,51 @@ export default function Home() {
 		</div>
 	)
 
+	const ContentSearch = () => (
+		<div className={styles.form}>
+			<div className={styles.book__search}>
+				<div className={styles.search__container}>
+					<div className={styles.search__icon}>
+						<Image src="/search.svg" width="16" height="16" alt="search icon" />
+					</div>
+					<input
+						className={styles.search__input}
+						type="text"
+						placeholder="本のタイトル、著者名"
+						onKeyPress={e => {
+							if (e.key == 'Enter') {
+								handleSearch(e.target.value)
+							}
+						}}
+					/>
+				</div>
+				{results.map(
+					(result, i) =>
+						result && (
+							<div className={`${results.length - 1 === i && styles.content__result__last}`} key={result.id}>
+								<a>
+									<div className={styles.row}>
+										<BookCardSearch key={i} book={result} />
+									</div>										
+								</a>
+						</div>
+						)
+				)}
+			</div>
+		</div>
+		
+	)
+
 	return (
 		<div className={styles.container}>
 			<div className={styles.close__button} onClick={handleCloseButton}>
 				<div>
 					<Image src="/x.svg" width="30" height="30" alt="icon" />
+				</div>
+			</div>
+			<div className={styles.plus} onClick={handleSearchStart}>
+				<div>
+					<Image src="/plusButton.svg" width="100" height="100" alt="icon" />
 				</div>
 			</div>
 			<div className={styles.main}>
@@ -129,6 +207,8 @@ export default function Home() {
 				<BookShelf setBookId={setBookId} />
 
 				<Modal isOpen={isOpen} handleClose={handleClose} content={Content({ handleClose })} />
+
+				<Modal isOpen={searchisOpen} handleClose={handleSearchClose} content={ContentSearch( {handleSearchClose })} />
 			</div>
 		</div>
 	)
@@ -190,3 +270,51 @@ const BookCard = ({ props }) => {
 		</div>
 	)
 }
+
+
+const BookCardSearch = ({ book }) => {
+	const router = useRouter()
+	const { currentUser } = useAuth()
+	const handleaddBook = async (book) => {	
+		const userRef = db.collection('users').doc(currentUser.uid)
+		const id = book.id
+		const bookRefs = await db.collection('books').where('userRef', '==', userRef).where('id', '==', id).get()
+		if (bookRefs.docs.length === 0) {
+			db.collection('books').add({
+				authors: book.authors || '',
+				description: book.description || '',
+				id: book.id || '',
+				imageLink: book.imageLink || '',
+				title: book.title || '',
+				pageCount: book.pageCount || '',
+				publisher: book.publisher || '',
+				publishedDate: book.publishedDate || '',
+				smallImageLink: book.imageLink || '',
+				userRef: userRef,
+				createTime: firebase.firestore.FieldValue.serverTimestamp(),
+			})
+			router.reload()
+		} else {
+			window.alert('すでに本棚に同じ本が存在しています')
+		}
+	}
+	return (
+		<div className={styles.bookCard}>
+			<div className={styles.flexWrapperFour}>
+				{book.imageLink && <Image className={styles.num2022061316151} src={book.imageLink} width="159" height="229" alt="book" />}
+
+				<div className={styles.flexWrapperFive}>
+					<p className={styles.bookTitle}>{book.title}</p>
+					<p className={styles.author}>{book.authors}</p>
+				</div>
+				<div className={styles.flexWrapperSix}>
+					<button className={styles.btn} onClick={() => handleaddBook(book)}>
+						<Image src="/plus.svg" width="18" height="18" alt="plus" />
+						本棚に追加
+					</button>
+				</div>
+			</div>
+			
+		</div>
+	)
+	}

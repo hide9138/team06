@@ -68,7 +68,7 @@ const Home = () => {
 
 	const hondleCreateBook = async () => {
 		const userRef = db.collection('users').doc(currentUser.uid)
-		const bookRefs = await db.collection('books').where('userRef', '==', userRef).get()
+		const bookRefs = await db.collection('books').where('userRef', '==', userRef).where('id', '==', bookDetail.id).get()
 		if (bookRefs.docs.length === 0) {
 			db.collection('books').add({
 				...bookDetail,
