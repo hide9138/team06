@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Modal from './modal';
 import firebase, { db, storage } from '../firebase/firebase'
 import { useUser } from './UserContext'
+import BackDrop from './backDrop'
 
 // 型メモ　 currentUser
 // type User = {
@@ -124,6 +125,7 @@ const EditProfileModal = () => {
       </button>
 
       <Modal isOpen={isOpen} handleClose={handleClose} content={Content({ handleSubmit })} />
+      <BackDrop loading={loading} />
     </div>
   )
 }
