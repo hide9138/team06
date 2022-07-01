@@ -131,7 +131,7 @@ export default function Home() {
 		</div>
 	)
 
-	const ContentSearch = () => (
+	const ContentSearch = ({ handleSearchClose }) => (
 		<div className={styles.searchModal}>
 			<div className={styles.book__search}>
 				<div className={styles.search__container}>
@@ -155,7 +155,7 @@ export default function Home() {
 							<div className={`${results.length - 1 === i && styles.content__result__last}`} key={result.id}>
 								<a>
 									<div className={styles.row}>
-										<BookCardSearch key={i} book={result} />
+										<BookCardSearch key={i} book={result} handleSearchClose={handleSearchClose} />
 									</div>
 								</a>
 							</div>
@@ -181,7 +181,7 @@ export default function Home() {
 				<div className={styles.title}>
 					<h1>本棚から本を選んでください</h1>
 				</div>
-				<BookShelf setBookId={setBookId} />
+				<BookShelf setBookId={setBookId} booksSet={searchisOpen} />
 
 				<Modal isOpen={isOpen} handleClose={handleClose} content={Content({ handleClose })} />
 
@@ -191,7 +191,7 @@ export default function Home() {
 	)
 }
 
-const BookShelf = ({ setBookId }) => {
+const BookShelf = ({ setBookId, booksSet }) => {
 	const [books, setBooks] = useState([])
 	const { currentUser } = useAuth()
 
@@ -206,8 +206,8 @@ const BookShelf = ({ setBookId }) => {
 				})
 				setBooks(bookList)
 			})
-		return
-	}, [currentUser])
+		console.log('本棚更新')
+	}, [currentUser, booksSet])
 
 	return (
 		<div className={styles.BookShelf}>
@@ -248,7 +248,7 @@ const BookCard = ({ props }) => {
 	)
 }
 
-const BookCardSearch = ({ book }) => {
+const BookCardSearch = ({ book, handleSearchClose }) => {
 	const router = useRouter()
 	const { currentUser } = useAuth()
 	const handleaddBook = async book => {
@@ -256,7 +256,7 @@ const BookCardSearch = ({ book }) => {
 		const id = book.id
 		const bookRefs = await db.collection('books').where('userRef', '==', userRef).where('id', '==', id).get()
 		if (bookRefs.docs.length === 0) {
-			db.collection('books').add({
+			await db.collection('books').add({
 				authors: book.authors || '',
 				description: book.description || '',
 				id: book.id || '',
@@ -269,7 +269,7 @@ const BookCardSearch = ({ book }) => {
 				userRef: userRef,
 				createTime: firebase.firestore.FieldValue.serverTimestamp(),
 			})
-			router.reload()
+			handleSearchClose()
 		} else {
 			window.alert('すでに本棚に同じ本が存在しています')
 		}
