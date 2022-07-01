@@ -82,8 +82,9 @@
 .searchModal {
 	background: #59bc6c;
 	width: 100%;
+	/* modal の最小の高さに合わせる */
+	min-height: 500px;
 	height: 100%;
-	position: relative;
 	padding-bottom: 2rem;
 }
 
