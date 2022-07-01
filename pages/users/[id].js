@@ -11,6 +11,8 @@ import { useAuth } from '../../components/AuthContext'
 import { useRouter } from 'next/router'
 
 const UserProfile = ({ user }) => {
+	const { id } = useUser()
+
 	return (
 		<div className={styles.user__profile__container}>
 			<div className={styles.user__profile__info__container}>
@@ -32,7 +34,7 @@ const UserProfile = ({ user }) => {
 				</div>
 			</div>
 			{/* プロフィール編集用モーダル */}
-			<EditProfileModal />
+			{user.id === id && <EditProfileModal />}
 		</div>
 	)
 }
