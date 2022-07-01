@@ -5,7 +5,7 @@ import styles from '../../styles/books/Home.module.css'
 import { useAuth } from '../../components/AuthContext'
 import OutputCard from '../../components/outputCard'
 import Layout from '../../components/layout'
-import { getBook } from '../../components/BookApiFetch'
+import { getBook } from '../../components/bookApiFetch'
 import firebase, { db } from '../../firebase/firebase'
 
 const Outputs = ({ outputs }) => {
@@ -68,7 +68,7 @@ const Home = () => {
 
 	const hondleCreateBook = async () => {
 		const userRef = db.collection('users').doc(currentUser.uid)
-		const bookRefs = await db.collection('books').where('userRef', '==', userRef).get()
+		const bookRefs = await db.collection('books').where('userRef', '==', userRef).where('id', '==', bookDetail.id).get()
 		if (bookRefs.docs.length === 0) {
 			db.collection('books').add({
 				...bookDetail,
