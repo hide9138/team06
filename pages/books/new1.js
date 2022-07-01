@@ -4,6 +4,7 @@ import Image from 'next/image'
 import styles from '../../styles/books/New1.module.css'
 import firebase, { db } from '../../firebase/firebase'
 import { useAuth } from '../../components/AuthContext'
+import { serchBooks } from '../../components/bookApiFetch'
 import Modal from '../../components/modal'
 
 export default function Home() {
@@ -19,25 +20,35 @@ export default function Home() {
 		router.push('/users/mypage')
 	}
 
+	const [results, setResults] = useState([])
+
+	const [isSearched, setIsSearched] = useState(false)
+
 	// modal
 	const [isOpen, setIsOpen] = useState(false)
+	const [searchisOpen, setSearchIsOpen] = useState(false)
+
+	const handleSearchStart = () => {
+		setSearchIsOpen(true)
+	}
 
 	const handleClose = () => {
 		setBookId(null)
 		setIsOpen(false)
 	}
 
-	useEffect(() => {
-		if (!bookId) return
+	const handleSearchClose = () => {
+		setSearchIsOpen(false)
+	}
 
+	useEffect(() => {
 		const getBookData = async () => {
 			const book = await db.collection('books').doc(bookId).get()
 			setBook(book.data())
-
 			setIsOpen(true)
 		}
 
-		getBookData()
+		if (bookId) getBookData()
 	}, [bookId])
 
 	const { currentUser } = useAuth()
@@ -62,6 +73,11 @@ export default function Home() {
 		} else {
 			window.alert('空欄を埋めてください')
 		}
+	}
+
+	const handleSearch = async searchWord => {
+		setIsSearched(true)
+		serchBooks(searchWord, setResults)
 	}
 
 	const Content = ({ handleClose }) => (
@@ -115,11 +131,50 @@ export default function Home() {
 		</div>
 	)
 
+	const ContentSearch = () => (
+		<div className={styles.searchModal}>
+			<div className={styles.book__search}>
+				<div className={styles.search__container}>
+					<div className={styles.search__icon}>
+						<Image src="/search.svg" width="16" height="16" alt="search icon" />
+					</div>
+					<input
+						className={styles.search__input}
+						type="text"
+						placeholder="本のタイトル、著者名"
+						onKeyPress={e => {
+							if (e.key == 'Enter') {
+								handleSearch(e.target.value)
+							}
+						}}
+					/>
+				</div>
+				{results.map(
+					(result, i) =>
+						result && (
+							<div className={`${results.length - 1 === i && styles.content__result__last}`} key={result.id}>
+								<a>
+									<div className={styles.row}>
+										<BookCardSearch key={i} book={result} />
+									</div>
+								</a>
+							</div>
+						)
+				)}
+			</div>
+		</div>
+	)
+
 	return (
 		<div className={styles.container}>
 			<div className={styles.close__button} onClick={handleCloseButton}>
 				<div>
 					<Image src="/x.svg" width="30" height="30" alt="icon" />
+				</div>
+			</div>
+			<div className={styles.plus} onClick={handleSearchStart}>
+				<div>
+					<Image src="/plusButton.svg" width="100" height="100" alt="icon" />
 				</div>
 			</div>
 			<div className={styles.main}>
@@ -129,6 +184,8 @@ export default function Home() {
 				<BookShelf setBookId={setBookId} />
 
 				<Modal isOpen={isOpen} handleClose={handleClose} content={Content({ handleClose })} />
+
+				<Modal isOpen={searchisOpen} handleClose={handleSearchClose} content={ContentSearch({ handleSearchClose })} />
 			</div>
 		</div>
 	)
@@ -186,6 +243,52 @@ const BookCard = ({ props }) => {
 					{/* html タグの仮排除処理 */}
 					{`${description?.slice(0, 200)}${description?.length >= 200 ? '...' : ''}`}
 				</p>
+			</div>
+		</div>
+	)
+}
+
+const BookCardSearch = ({ book }) => {
+	const router = useRouter()
+	const { currentUser } = useAuth()
+	const handleaddBook = async book => {
+		const userRef = db.collection('users').doc(currentUser.uid)
+		const id = book.id
+		const bookRefs = await db.collection('books').where('userRef', '==', userRef).where('id', '==', id).get()
+		if (bookRefs.docs.length === 0) {
+			db.collection('books').add({
+				authors: book.authors || '',
+				description: book.description || '',
+				id: book.id || '',
+				imageLink: book.imageLink || '',
+				title: book.title || '',
+				pageCount: book.pageCount || '',
+				publisher: book.publisher || '',
+				publishedDate: book.publishedDate || '',
+				smallImageLink: book.imageLink || '',
+				userRef: userRef,
+				createTime: firebase.firestore.FieldValue.serverTimestamp(),
+			})
+			router.reload()
+		} else {
+			window.alert('すでに本棚に同じ本が存在しています')
+		}
+	}
+	return (
+		<div className={styles.bookCard}>
+			<div className={styles.flexWrapperFour}>
+				{book.imageLink && <Image className={styles.num2022061316151} src={book.imageLink} width="159" height="229" alt="book" />}
+
+				<div className={styles.flexWrapperFive}>
+					<p className={styles.bookTitle}>{book.title}</p>
+					<p className={styles.author}>{book.authors}</p>
+				</div>
+				<div className={styles.flexWrapperSix}>
+					<button className={styles.btn} onClick={() => handleaddBook(book)}>
+						<Image src="/plus.svg" width="18" height="18" alt="plus" />
+						本棚に追加
+					</button>
+				</div>
 			</div>
 		</div>
 	)

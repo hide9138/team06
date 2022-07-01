@@ -16,30 +16,21 @@ const format = item => {
 	}
 }
 
-export const getBook = async (bookId, updateState) => {
+export const getBook = async (bookId, bookeState) => {
 	const url = 'https://www.googleapis.com/books/v1/volumes/' + bookId
 	const result = await axios(url)
 	const item = result.data
 	const bookDetail = format(item)
-	console.log(bookDetail)
 	if (bookDetail.publishedDate) bookDetail.publishedDate = bookDetail.publishedDate.replace('-', '/')
 	if (bookDetail.description) bookDetail.description = bookDetail.description.replace(/(<([^>]+)>)/gi, '')
 	if (bookDetail.description && bookDetail.description.length > 200) bookDetail.description = bookDetail.description.substr(0, 200) + '...'
-	updateState(bookDetail)
+	bookeState(bookDetail)
 }
 
-export const SerchBooks = serchWord => {
-	const [books, setBooks] = useState([])
-	useEffect(() => {
-		const fetchData = async () => {
-			const url = `https://www.googleapis.com/books/v1/volumes/?q=${serchWord}&maxResults=2&key=${process.env.NEXT_PUBLIC_BOOK_API_KEY}`
-			const result = await axios(url)
-			const items = result.data.items
-			const outData = items.map(item => format(item))
-			setBooks(outData)
-		}
-		fetchData()
-	}, [serchWord])
-
-	return books
+export const serchBooks = async (searchWord, booksState) => {
+	const url = `https://www.googleapis.com/books/v1/volumes/?q=${searchWord}&maxResults=6&key=${process.env.NEXT_PUBLIC_BOOK_API_KEY}`
+	const result = await axios(url)
+	const items = result.data.items
+	const outData = items.map(item => format(item))
+	booksState(outData)
 }
