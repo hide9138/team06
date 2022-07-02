@@ -22,7 +22,6 @@ const OutputCard = ({ output, setIsDelete }) => {
 		}
 	}
 	const deleteTweet = async () => {
-		console.log(output.tweet.mainId)
 		const tweetRef = db.collection('tweets').doc(output.tweet.mainId)
 		const tweetDoc = await tweetRef.get()
 		const query = await db.collection('likes').where('tweetRef', '==', tweetDoc.ref).get()
