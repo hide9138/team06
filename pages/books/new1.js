@@ -206,7 +206,6 @@ const BookShelf = ({ setBookId, booksSet }) => {
 				})
 				setBooks(bookList)
 			})
-		console.log('本棚更新')
 	}, [currentUser, booksSet])
 
 	return (

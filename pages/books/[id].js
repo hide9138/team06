@@ -26,7 +26,7 @@ const Home = () => {
 	const bookRef = db.collection('books').where('id', '==', id)
 	const [outputs, setOutputs] = useState([])
 	const [bookDetail, setBookDetail] = useState([])
-	const updateState = book => setBookDetail(book) // console.log(outputs)
+	const updateState = book => setBookDetail(book)
 	const { currentUser } = useAuth()
 
 	useEffect(() => {
@@ -58,7 +58,6 @@ const Home = () => {
 		}
 		getBook(id, updateState)
 		getOutputs()
-		console.log('effect')
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [id])
 
